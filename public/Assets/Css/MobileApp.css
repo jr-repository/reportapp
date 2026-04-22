@@ -1,0 +1,1051 @@
+:root {
+    --BrandPrimary: #a4084f;
+    --BrandPrimaryDark: #7d063d;
+    --BrandSecondary: #f97316;
+    --BrandSecondarySoft: #fff0e4;
+    --Surface: #ffffff;
+    --SurfaceSoft: #fff8f4;
+    --SurfaceMuted: #f6f7fb;
+    --TextStrong: #22252b;
+    --TextMuted: #6f7785;
+    --Border: #ececf4;
+    --Success: #16a34a;
+    --Danger: #dc2626;
+    --Shadow: 0 18px 36px rgba(34, 37, 43, 0.08);
+    --Radius: 18px;
+    --RadiusSmall: 12px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    color: var(--TextStrong);
+    background: #3a3a3f;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+.AmbientBackground {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at top center, rgba(255, 255, 255, 0.08), transparent 24%),
+        linear-gradient(180deg, #3a3a3f 0%, #2d2d31 100%);
+    pointer-events: none;
+}
+
+.DeviceWrap {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+.MobileFrame {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #ffffff 0%, #fff7f2 100%);
+    overflow: hidden;
+}
+
+.TopBar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px 8px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(236, 236, 244, 0.9);
+}
+
+.TopBarBrand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.TopBarBrandIcon {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--BrandPrimary), var(--BrandSecondary));
+}
+
+.TopBarBrand strong,
+.TopBarBrand small {
+    display: block;
+}
+
+.TopBarBrand strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.1;
+}
+
+.TopBarBrand small {
+    margin-top: 2px;
+    color: var(--TextMuted);
+    font-size: 0.72rem;
+}
+
+.TopBarActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ProfileChip,
+.IconButton {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: #fff4ee;
+    color: var(--BrandPrimary);
+    box-shadow: inset 0 0 0 1px rgba(164, 8, 79, 0.08);
+}
+
+.ProfileAvatar {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.IconButton {
+    cursor: pointer;
+    padding: 8px;
+}
+
+.IconButton svg {
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.LogoutForm {
+    margin: 0;
+}
+
+.MobileShell {
+    padding: 12px 12px 96px;
+}
+
+.FlashMessage {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.FlashMessage.isSuccess {
+    background: rgba(22, 163, 74, 0.12);
+    color: #166534;
+}
+
+.FlashMessage.isError {
+    background: rgba(220, 38, 38, 0.12);
+    color: #991b1b;
+}
+
+.PageHeader,
+.InfoCard,
+.FormSectionCard,
+.GlassCard,
+.AuthFooterCard,
+.SuccessCard,
+.MiniMetricCard,
+.CarouselSection {
+    background: var(--Surface);
+    border: 1px solid var(--Border);
+    border-radius: var(--Radius);
+    box-shadow: var(--Shadow);
+}
+
+.PageHeader,
+.InfoCard,
+.FormSectionCard,
+.GlassCard,
+.AuthFooterCard,
+.SuccessCard,
+.CarouselSection {
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.PageHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.Eyebrow {
+    margin: 0 0 6px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--BrandPrimary);
+}
+
+.Eyebrow.isLight {
+    color: rgba(255, 255, 255, 0.76);
+}
+
+h1,
+h2,
+strong {
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.16rem;
+    line-height: 1.2;
+}
+
+h2 {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.2;
+}
+
+p {
+    margin: 0;
+    color: var(--TextMuted);
+    line-height: 1.5;
+    font-size: 0.78rem;
+}
+
+.PageSubtitle {
+    margin-top: 6px;
+}
+
+.WelcomeBanner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 0 0 24px 24px;
+    background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 28%),
+        linear-gradient(135deg, var(--BrandPrimary) 0%, #cb114a 46%, var(--BrandSecondary) 100%);
+    color: #fff;
+}
+
+.WelcomeBanner h1 {
+    font-size: 1.22rem;
+}
+
+.WelcomeBanner p {
+    margin-top: 6px;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.WelcomeBannerMeta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.WelcomeBannerMeta span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.CompactStatGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.MiniMetricCard {
+    padding: 12px;
+}
+
+.MetricLabel {
+    display: block;
+    color: var(--TextMuted);
+    font-size: 0.7rem;
+}
+
+.MiniMetricCard strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 1.02rem;
+}
+
+.CompactHighlightCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #fff0ea, #ffffff);
+    border: 1px solid #ffe0d1;
+}
+
+.CompactHighlightCard strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.CardHeading,
+.StatusItem,
+.ReportCard,
+.UserCard,
+.ChecklistItem,
+.DetailList div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.CardHeading {
+    margin-bottom: 10px;
+}
+
+.CardHeading span {
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+    color: var(--TextMuted);
+}
+
+.BannerCarousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.BannerCarousel::-webkit-scrollbar,
+.SectionPills::-webkit-scrollbar,
+.QuickMenuScroller::-webkit-scrollbar {
+    display: none;
+}
+
+.BannerSlide {
+    position: relative;
+    flex: 0 0 100%;
+    min-height: 128px;
+    padding: 14px;
+    border-radius: 16px;
+    scroll-snap-align: start;
+    overflow: hidden;
+    color: #fff;
+}
+
+.BannerSlide::before,
+.BannerSlide::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.BannerSlide::before {
+    width: 120px;
+    height: 120px;
+    right: -28px;
+    top: -26px;
+}
+
+.BannerSlide::after {
+    width: 72px;
+    height: 72px;
+    right: 18px;
+    bottom: -18px;
+}
+
+.BannerSlide.isOne {
+    background: linear-gradient(135deg, var(--BrandPrimary), #db2777);
+}
+
+.BannerSlide.isTwo {
+    background: linear-gradient(135deg, #ef4444, var(--BrandSecondary));
+}
+
+.BannerSlide.isThree {
+    background: linear-gradient(135deg, #7c2d12, #f97316);
+}
+
+.BannerSlide small {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 0.68rem;
+    opacity: 0.84;
+}
+
+.BannerSlide strong {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-width: 76%;
+    font-size: 1rem;
+    line-height: 1.35;
+}
+
+.CarouselDots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.CarouselDots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #e2dbe3;
+}
+
+.CarouselDots span.isActive {
+    width: 16px;
+    background: var(--BrandPrimary);
+}
+
+.QuickMenuScroller {
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.QuickMenuGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.QuickMenuGrid.isCompact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.QuickMenuCard {
+    display: grid;
+    justify-items: start;
+    gap: 7px;
+    padding: 12px 10px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid #f0e6e8;
+    min-height: 104px;
+}
+
+.QuickMenuCard.isCompact {
+    min-height: 110px;
+}
+
+.QuickMenuCard strong {
+    font-size: 0.79rem;
+    line-height: 1.2;
+}
+
+.QuickMenuCard small {
+    color: var(--TextMuted);
+    font-size: 0.67rem;
+    line-height: 1.3;
+}
+
+.QuickMenuIcon {
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    border-radius: 12px;
+    color: var(--BrandPrimary);
+    background: #fff3ef;
+}
+
+.QuickMenuIcon svg {
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.StatusList {
+    display: grid;
+    gap: 8px;
+}
+
+.StatusList.isCompact {
+    gap: 7px;
+}
+
+.StatusItem,
+.ReportCard,
+.UserCard,
+.ChecklistItem {
+    padding: 11px 12px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #f1edf0;
+}
+
+.StatusItem.isCompact,
+.ReportCard,
+.UserCard,
+.ChecklistItem {
+    align-items: flex-start;
+}
+
+.StatusItem p,
+.ReportCard p,
+.UserCard p {
+    margin-top: 3px;
+    font-size: 0.72rem;
+    line-height: 1.45;
+}
+
+.StatusBadge,
+.DataTag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.StatusBadge.isDone {
+    background: rgba(22, 163, 74, 0.12);
+    color: var(--Success);
+}
+
+.StatusBadge.isPending {
+    background: rgba(249, 115, 22, 0.12);
+    color: #c2410c;
+}
+
+.StackForm {
+    display: grid;
+    gap: 12px;
+}
+
+.FieldGrid,
+.CounterGrid,
+.StatGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.FieldBlock {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+}
+
+.FieldBlock span {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #343a45;
+}
+
+.FieldBlock.alignEnd {
+    align-self: end;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid #ebeaf0;
+    background: #fbfbfd;
+    color: var(--TextStrong);
+    outline: none;
+    box-shadow: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: rgba(164, 8, 79, 0.28);
+    background: #fff;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.LargeTextarea {
+    min-height: 150px;
+}
+
+.SectionPills {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
+
+.WizardProgress {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 12px;
+    padding-bottom: 2px;
+}
+
+.WizardChip {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff0ea;
+    color: var(--BrandPrimary);
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.WizardChip.isActive {
+    background: linear-gradient(135deg, var(--BrandPrimary), var(--BrandSecondary));
+    color: #fff;
+}
+
+.SectionPills a {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #fff0ea;
+    color: var(--BrandPrimary);
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.UploadCard {
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px dashed #f2b49b;
+    background: var(--SurfaceSoft);
+}
+
+.UploadCard input[type=file] {
+    background: #fff;
+}
+
+.PhotoPreviewGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.PhotoPreviewGrid img {
+    width: 100%;
+    height: 82px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.WeatherOptions,
+.TagList,
+.InlineActions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ChoiceChip input {
+    display: none;
+}
+
+.ChoiceChip span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: #f4f5f8;
+    color: var(--TextMuted);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.ChoiceChip input:checked + span {
+    background: linear-gradient(135deg, var(--BrandPrimary), var(--BrandSecondary));
+    color: #fff;
+}
+
+.CounterField {
+    display: grid;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #fbfbfd;
+    border: 1px solid #efeef3;
+}
+
+.CounterField span {
+    font-size: 0.69rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.CounterField input {
+    padding: 10px 11px;
+}
+
+.PrimaryButton,
+.SecondaryActionButton,
+.GhostButton,
+.InlineAction {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.PrimaryButton {
+    padding: 0 14px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--BrandPrimary), var(--BrandSecondary));
+}
+
+.PrimaryButton.isCompact {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 0.74rem;
+}
+
+.SecondaryActionButton,
+.GhostButton,
+.InlineAction {
+    padding: 0 12px;
+    color: var(--BrandPrimary);
+    background: #fff2ed;
+}
+
+.InlineAction {
+    min-height: 32px;
+    font-size: 0.68rem;
+}
+
+.StickyActionBar {
+    position: sticky;
+    bottom: 84px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--Border);
+    box-shadow: 0 10px 24px rgba(34, 37, 43, 0.08);
+}
+
+.StickyActionBar.isWizard {
+    margin-top: 12px;
+}
+
+.ChecklistList {
+    display: grid;
+    gap: 8px;
+}
+
+.ChecklistItem strong {
+    font-size: 0.94rem;
+}
+
+.ChecklistItem.isDone {
+    background: rgba(236, 253, 245, 0.92);
+}
+
+.ChecklistItem.isMissing {
+    background: rgba(254, 242, 242, 0.92);
+}
+
+.SuccessCard {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    text-align: center;
+}
+
+.SuccessIcon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(22, 163, 74, 0.16);
+    color: var(--Success);
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.DetailList {
+    display: grid;
+    gap: 8px;
+}
+
+.DetailList div {
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0edf2;
+}
+
+.DetailList div:last-child {
+    border-bottom: 0;
+}
+
+.DetailList span {
+    color: var(--TextMuted);
+    font-size: 0.7rem;
+}
+
+.DetailList strong {
+    max-width: 58%;
+    text-align: right;
+    font-size: 0.76rem;
+    word-break: break-word;
+}
+
+.RichText {
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.SummaryBox {
+    white-space: pre-wrap;
+    background: #231f28;
+    color: #f4f2f7;
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 0.72rem;
+    line-height: 1.55;
+    overflow: auto;
+}
+
+.AuthScreen {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.AuthBrand {
+    position: relative;
+    padding: 26px 18px 20px;
+    margin: -12px -12px 14px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 80% -10%, rgba(255, 255, 255, 0.22), transparent 24%),
+        linear-gradient(135deg, var(--BrandPrimary) 0%, #cb114a 52%, var(--BrandSecondary) 100%);
+    border-radius: 0 0 34px 34px;
+}
+
+.AuthBrand p {
+    margin-top: 6px;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.BrandMark {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.AuthFooterCard {
+    text-align: center;
+    display: grid;
+    gap: 4px;
+}
+
+.AuthFooterCard a {
+    color: var(--BrandPrimary);
+    font-weight: 700;
+}
+
+.BottomNavigation {
+    position: fixed;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    z-index: 30;
+    width: calc(100vw - 18px);
+    max-width: 408px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.96);
+    box-shadow: 0 14px 30px rgba(34, 37, 43, 0.14);
+}
+
+.BottomNavItem {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 6px 2px;
+    color: #7c8494;
+    font-size: 0.62rem;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+.BottomNavItem.isActive {
+    color: var(--BrandPrimary);
+    background: #fff1eb;
+}
+
+.BottomNavIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.BottomNavIcon svg {
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ProfileHeroCard {
+    margin: -12px -12px 12px;
+    padding: 24px 16px 16px;
+    background: linear-gradient(135deg, var(--BrandPrimary), var(--BrandSecondary));
+    color: #fff;
+    text-align: center;
+    border-radius: 0 0 28px 28px;
+}
+
+.ProfileHeroCard p {
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.84);
+}
+
+.ProfileHeroAvatar {
+    width: 74px;
+    height: 74px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--BrandPrimary);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+}
+
+.LogoutBlock {
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+pre {
+    margin: 0;
+}
+
+@media (max-width: 390px) {
+    .MobileShell {
+        padding: 10px 10px 92px;
+    }
+
+    .QuickMenuGrid,
+    .QuickMenuGrid.isCompact,
+    .FieldGrid,
+    .CounterGrid,
+    .PhotoPreviewGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .StickyActionBar {
+        grid-template-columns: 1fr;
+    }
+
+    .WelcomeBanner {
+        grid-template-columns: 1fr;
+    }
+}
