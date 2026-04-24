@@ -7,6 +7,7 @@
     'subtitle' => 'Laporan tanggal ' . date('d F Y', strtotime($bundle['report']['report_date'])),
     'actionHref' => base_url('reports/pdf/' . $bundle['report']['id']),
     'actionLabel' => 'Buka PDF',
+    'actionIcon' => 'pdf',
 ]) ?>
 
 <section class="SuccessCard">
@@ -99,14 +100,16 @@
 <section class="InfoCard">
     <div class="CardHeading">
         <h2>Ringkasan WhatsApp</h2>
-        <button type="button" class="InlineAction" data-copy-target="WhatsAppSummary">Copy</button>
+        <button type="button" class="InlineAction isIconOnly" data-copy-target="WhatsAppSummary" aria-label="Salin ringkasan WhatsApp" title="Salin ringkasan WhatsApp" data-copy-default-label="Salin ringkasan WhatsApp" data-copy-success-label="Ringkasan tersalin">
+            <?= trace_icon('copy') ?>
+        </button>
     </div>
     <pre id="WhatsAppSummary" class="SummaryBox"><?= esc($bundle['report']['whatsapp_summary'] ?: 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
 </section>
 
 <?php if ($bundle['report']['status'] !== 'Submitted') : ?>
     <div class="StickyActionBar">
-        <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton">Edit Draft</a>
+        <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton isIconOnly" aria-label="Edit draft laporan" title="Edit draft laporan"><?= trace_icon('edit') ?></a>
         <form method="post" action="<?= base_url('reports/submit/' . $bundle['report']['id']) ?>">
             <?= csrf_field() ?>
             <button type="submit" class="PrimaryButton">Submit Final</button>

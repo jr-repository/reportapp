@@ -58,8 +58,8 @@
                 </div>
                 <div class="InlineActions">
                     <span class="StatusBadge <?= $report['status'] === 'Submitted' ? 'isDone' : 'isPending' ?>"><?= esc($report['status']) ?></span>
-                    <a href="<?= base_url('reports/detail/' . $report['id']) ?>" class="InlineAction">Detail</a>
-                    <a href="<?= base_url('reports/pdf/' . $report['id']) ?>" class="InlineAction">PDF</a>
+                    <a href="<?= base_url('reports/detail/' . $report['id']) ?>" class="InlineAction isIconOnly" aria-label="Lihat detail laporan" title="Lihat detail laporan"><?= trace_icon('detail') ?></a>
+                    <a href="<?= base_url('reports/pdf/' . $report['id']) ?>" class="InlineAction isIconOnly" aria-label="Generate PDF laporan" title="Generate PDF laporan"><?= trace_icon('pdf') ?></a>
                 </div>
             </div>
         <?php endforeach; ?>

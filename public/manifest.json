@@ -1,13 +1,13 @@
 {
-  "name": "Report Daily",
-  "short_name": "ReportDaily",
-  "description": "Aplikasi laporan harian lapangan berbasis mobile PWA.",
+  "name": "TRACE",
+  "short_name": "TRACE",
+  "description": "TRACE — Tracking Report & Activity Control Engine.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#effcf8",
-  "theme_color": "#0f766e",
+  "background_color": "#f4f5f7",
+  "theme_color": "#17345f",
   "icons": [
     {
       "src": "Assets/Icons/AppIcon-192.png",
@@ -20,12 +20,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "Assets/Icons/AppIcon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
     }
   ]
 }

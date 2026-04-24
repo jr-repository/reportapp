@@ -81,8 +81,8 @@
                 </div>
                 <div class="InlineActions">
                     <span class="StatusBadge <?= $user['status'] === 'Active' ? 'isDone' : 'isPending' ?>"><?= esc($user['status']) ?></span>
-                    <a href="<?= base_url('admin/users?edit=' . $user['id']) ?>" class="InlineAction">Edit</a>
-                    <a href="<?= base_url('admin/users/toggle/' . $user['id']) ?>" class="InlineAction">Toggle</a>
+                    <a href="<?= base_url('admin/users?edit=' . $user['id']) ?>" class="InlineAction isIconOnly" aria-label="Edit user" title="Edit user"><?= trace_icon('edit') ?></a>
+                    <a href="<?= base_url('admin/users/toggle/' . $user['id']) ?>" class="InlineAction isIconOnly" aria-label="Toggle status user" title="Toggle status user"><?= trace_icon('toggle') ?></a>
                 </div>
             </div>
         <?php endforeach; ?>

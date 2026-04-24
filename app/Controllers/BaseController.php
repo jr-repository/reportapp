@@ -52,7 +52,9 @@ abstract class BaseController extends Controller
             'isAuthenticated'   => $currentUser !== null,
             'bottomNavigation'  => $this->getBottomNavigation($currentUser),
             'currentUriPath'    => trim((string) current_url(true)->getPath(), '/'),
-            'appName'           => 'Report Daily',
+            'appName'           => trace_app_name(),
+            'appTagline'        => trace_app_tagline(),
+            'appBrand'          => trace_app_brand(),
         ];
     }
 

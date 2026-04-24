@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <?= view('Components/PageHeader', [
-    'eyebrow' => 'Manager View',
+    'eyebrow' => 'TRACE Insight',
     'title' => 'Trend & Rekap',
     'subtitle' => 'Ringkasan progres pelaporan dan cuaca kerja dalam tampilan ringkas.',
 ]) ?>
@@ -40,7 +40,7 @@
                     <strong><?= esc($report['worker_name']) ?></strong>
                     <p><?= esc(date('d M Y', strtotime($report['report_date']))) ?> • <?= esc($report['status']) ?></p>
                 </div>
-                <a href="<?= base_url('reports/detail/' . $report['id']) ?>" class="InlineAction">Detail</a>
+                <a href="<?= base_url('reports/detail/' . $report['id']) ?>" class="InlineAction isIconOnly" aria-label="Lihat detail laporan" title="Lihat detail laporan"><?= trace_icon('detail') ?></a>
             </div>
         <?php endforeach; ?>
     </div>

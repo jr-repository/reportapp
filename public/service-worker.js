@@ -1,11 +1,13 @@
-const CACHE_NAME = 'report-daily-pwa-v2';
+const CACHE_NAME = 'trace-pwa-v3';
 const APP_SHELL = [
     './manifest.json',
     './Assets/Css/MobileApp.css',
     './Assets/Js/MobileApp.js',
+    './Assets/Vendor/AOS/aos.css',
+    './Assets/Vendor/AOS/aos.js',
     './Assets/Icons/AppIcon-192.png',
     './Assets/Icons/AppIcon-512.png',
-    './Assets/Icons/AppIcon.svg'
+    './Assets/Image/logo.png'
 ];
 
 self.addEventListener('install', (event) => {

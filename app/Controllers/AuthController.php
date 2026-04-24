@@ -13,6 +13,7 @@ class AuthController extends BaseController
 
         return $this->page('Auth/LoginPage', [
             'pageTitle' => 'Login',
+            'pageClass' => 'AuthPage',
         ]);
     }
 
@@ -41,6 +42,7 @@ class AuthController extends BaseController
 
         return $this->page('Auth/RegisterPage', [
             'pageTitle' => 'Register',
+            'pageClass' => 'AuthPage',
         ]);
     }
 

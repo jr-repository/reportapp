@@ -7,6 +7,7 @@
     'subtitle' => 'Pastikan semua komponen laporan sudah sesuai sebelum final submit.',
     'actionHref' => base_url('reports/edit/' . $bundle['report']['id']),
     'actionLabel' => 'Ubah Draft',
+    'actionIcon' => 'edit',
 ]) ?>
 
 <section class="MetricCard isAccent">
@@ -54,7 +55,7 @@
 <form method="post" action="<?= base_url('reports/submit/' . $bundle['report']['id']) ?>">
     <?= csrf_field() ?>
     <div class="StickyActionBar">
-        <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton">Back</a>
+        <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton isIconOnly" aria-label="Kembali ke edit draft" title="Kembali ke edit draft"><?= trace_icon('back') ?></a>
         <button type="submit" class="PrimaryButton">Submit Final</button>
     </div>
 </form>

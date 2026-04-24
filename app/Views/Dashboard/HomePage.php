@@ -34,9 +34,9 @@ $renderMenuIcon = static function (string $name): string {
 
 <section class="WelcomeBanner">
     <div class="WelcomeBannerContent">
-        <p class="Eyebrow isLight">Dashboard Mobile</p>
+        <p class="Eyebrow isLight"><?= esc(trace_app_name()) ?> Workspace</p>
         <h1>Halo, <?= esc($currentUser['full_name'] ?? '-') ?></h1>
-        <p>Pelaporan lapangan yang lebih rapi, kecil, padat, dan nyaman dipakai di layar Android.</p>
+        <p><?= esc(trace_app_tagline()) ?> untuk pelaporan lapangan yang lebih rapi, padat, dan nyaman dipakai di layar mobile.</p>
         <div class="WelcomeBannerMeta">
             <span><?= esc(date('d M Y', strtotime($homeData['today']))) ?></span>
             <span><?= esc((string) $homeData['submittedCount']) ?> selesai</span>
@@ -76,7 +76,7 @@ $renderMenuIcon = static function (string $name): string {
         </article>
         <article class="BannerSlide isThree">
             <div>
-                <small>Manager View</small>
+                <small>TRACE Insight</small>
                 <strong>Lihat trend progres dan monitoring disiplin pengisian laporan.</strong>
             </div>
         </article>
@@ -97,7 +97,7 @@ $renderMenuIcon = static function (string $name): string {
                 <strong><?= esc($latestReport['full_name']) ?></strong>
                 <p><?= esc(character_limiter($latestReport['realization_summary'], 88)) ?></p>
             </div>
-            <a href="<?= base_url('reports/detail/' . $latestReport['id']) ?>" class="InlineAction">Detail</a>
+            <a href="<?= base_url('reports/detail/' . $latestReport['id']) ?>" class="InlineAction isIconOnly" aria-label="Lihat detail laporan terbaru" title="Lihat detail laporan terbaru"><?= trace_icon('detail') ?></a>
         </div>
     <?php else : ?>
         <p class="InfoText">Belum ada laporan final yang masuk.</p>
