@@ -16,6 +16,7 @@ class UserModel extends Model
         'email',
         'username',
         'phone',
+        'profile_photo_path',
         'password_hash',
         'status',
         'last_login_at',

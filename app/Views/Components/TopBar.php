@@ -1,3 +1,4 @@
+<?php $profilePhotoUrl = trace_user_photo_url($currentUser ?? null); ?>
 <header class="TopBar">
     <a href="<?= base_url('/') ?>" class="TopBarBrand">
         <span class="TopBarBrandIcon">
@@ -11,7 +12,11 @@
 
     <div class="TopBarActions">
         <a href="<?= base_url('profile') ?>" class="ProfileChip" aria-label="Buka profil">
-            <?= trace_icon('profile') ?>
+            <?php if ($profilePhotoUrl !== null) : ?>
+                <img src="<?= esc($profilePhotoUrl) ?>" alt="<?= esc($currentUser['full_name'] ?? trace_app_name()) ?>" class="ProfilePhoto">
+            <?php else : ?>
+                <span class="ProfileAvatar"><?= esc(trace_user_initial($currentUser ?? null)) ?></span>
+            <?php endif; ?>
         </a>
 
         <form method="post" action="<?= base_url('logout') ?>" class="LogoutForm">

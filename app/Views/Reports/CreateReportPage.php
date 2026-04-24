@@ -52,8 +52,8 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </div>
 
         <div class="StickyActionBar isWizard">
-            <a href="<?= base_url('/') ?>" class="GhostButton">Batal</a>
-            <button type="button" class="PrimaryButton" data-wizard-next>Next</button>
+            <a href="<?= base_url('/') ?>" class="GhostButton isArrowOnly" aria-label="Kembali ke dashboard" title="Kembali ke dashboard"><?= trace_icon('back') ?></a>
+            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
         </div>
     </section>
 
@@ -108,8 +108,8 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </div>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton" data-wizard-prev>Back</button>
-            <button type="button" class="PrimaryButton" data-wizard-next>Next</button>
+            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
+            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
         </div>
     </section>
 
@@ -144,8 +144,8 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </label>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton" data-wizard-prev>Back</button>
-            <button type="button" class="PrimaryButton" data-wizard-next>Next</button>
+            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
+            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
         </div>
     </section>
 
@@ -185,8 +185,8 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </label>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton" data-wizard-prev>Back</button>
-            <button type="button" class="PrimaryButton" data-wizard-next>Next</button>
+            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
+            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
         </div>
     </section>
 
@@ -248,7 +248,7 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </div>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton" data-wizard-prev>Back</button>
+            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
             <button type="submit" class="PrimaryButton">Simpan Draft & Review</button>
         </div>
     </section>

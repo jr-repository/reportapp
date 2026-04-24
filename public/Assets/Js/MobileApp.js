@@ -1,5 +1,10 @@
 (function () {
     let deferredInstallPrompt = null;
+    let installPromptDismissed = false;
+    let aosInitialized = false;
+
+    const body = document.body;
+    const pageClass = () => (body?.dataset.pageClass || '').trim();
 
     const registerServiceWorker = async () => {
         if (!('serviceWorker' in navigator)) {
@@ -20,51 +25,39 @@
         }
     };
 
-    const initAos = () => {
-        const animatedSelectors = [
-            '.PageHeader',
-            '.WelcomeBanner',
-            '.InfoCard',
-            '.FormSectionCard',
-            '.GlassCard',
-            '.AuthFooterCard',
-            '.SuccessCard',
-            '.CarouselSection',
-            '.MetricCard',
-            '.MiniMetricCard',
-            '.ProfileHeroCard',
-            '.AuthBrand',
-        ];
+    const shouldUseAos = () => ['AuthPage', 'HomePage'].includes(pageClass());
 
-        animatedSelectors.forEach((selector) => {
+    const initAos = () => {
+        if (!shouldUseAos() || !window.AOS) {
+            return;
+        }
+
+        const selectorsByPage = {
+            AuthPage: ['.AuthBrand', '.GlassCard', '.AuthFooterCard'],
+            HomePage: ['.WelcomeBanner', '.CompactStatGrid', '.InfoCard', '.CarouselSection'],
+        };
+
+        (selectorsByPage[pageClass()] || []).forEach((selector) => {
             document.querySelectorAll(selector).forEach((element, index) => {
                 if (!element.hasAttribute('data-aos')) {
                     element.setAttribute('data-aos', 'fade-up');
-                    element.setAttribute('data-aos-delay', String(Math.min(index * 50, 220)));
+                    element.setAttribute('data-aos-delay', String(Math.min(index * 70, 220)));
                 }
             });
         });
 
-        if (window.AOS) {
+        if (!aosInitialized) {
             window.AOS.init({
-                duration: 650,
+                duration: 520,
                 once: true,
-                offset: 16,
+                offset: 10,
                 easing: 'ease-out-cubic',
             });
-        }
-    };
-
-    const initSplashScreen = () => {
-        const splash = document.getElementById('AppSplashScreen');
-
-        if (!splash) {
+            aosInitialized = true;
             return;
         }
 
-        window.setTimeout(() => {
-            splash.classList.add('isHidden');
-        }, 1450);
+        window.AOS.refreshHard();
     };
 
     const updateInstallPromptVisibility = (visible) => {
@@ -75,6 +68,8 @@
         }
 
         prompt.hidden = !visible;
+        prompt.classList.toggle('isVisible', visible);
+        prompt.style.display = visible ? 'flex' : 'none';
     };
 
     const isStandaloneMode = () =>
@@ -92,27 +87,40 @@
     };
 
     const initInstallPrompt = () => {
+        const prompt = document.getElementById('PwaInstallPrompt');
         const installButton = document.getElementById('InstallAppButton');
         const dismissButton = document.getElementById('DismissInstallPrompt');
+        const dismissedKey = 'trace-install-dismissed';
+        const installedKey = 'trace-installed';
 
-        if (!installButton || !dismissButton || isStandaloneMode()) {
+        if (!prompt || !installButton || !dismissButton) {
+            return;
+        }
+
+        if (isStandaloneMode()) {
+            window.localStorage.setItem(installedKey, '1');
             updateInstallPromptVisibility(false);
             return;
         }
 
-        const dismissedKey = 'trace-install-dismissed';
+        installPromptDismissed = window.localStorage.getItem(dismissedKey) === '1';
+        const isInstalled = window.localStorage.getItem(installedKey) === '1';
 
-        if (window.localStorage.getItem(dismissedKey) === '1') {
+        if (isInstalled) {
             updateInstallPromptVisibility(false);
+            return;
         }
+
+        const maybeShowPrompt = () => {
+            if (!installPromptDismissed && !isStandaloneMode() && isMobileViewport()) {
+                updateInstallPromptVisibility(true);
+            }
+        };
 
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
             deferredInstallPrompt = event;
-
-            if (window.localStorage.getItem(dismissedKey) !== '1') {
-                updateInstallPromptVisibility(true);
-            }
+            maybeShowPrompt();
         });
 
         installButton.addEventListener('click', async () => {
@@ -122,27 +130,35 @@
             }
 
             deferredInstallPrompt.prompt();
-            await deferredInstallPrompt.userChoice;
+            const choice = await deferredInstallPrompt.userChoice;
             deferredInstallPrompt = null;
+
+            if (choice?.outcome === 'accepted') {
+                window.localStorage.setItem(installedKey, '1');
+            }
+
             updateInstallPromptVisibility(false);
         });
 
-        dismissButton.addEventListener('click', () => {
+        dismissButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            installPromptDismissed = true;
             window.localStorage.setItem(dismissedKey, '1');
+            deferredInstallPrompt = null;
             updateInstallPromptVisibility(false);
+            prompt.remove();
         });
 
         window.addEventListener('appinstalled', () => {
             deferredInstallPrompt = null;
-            updateInstallPromptVisibility(false);
+            window.localStorage.setItem(installedKey, '1');
             window.localStorage.removeItem(dismissedKey);
+            installPromptDismissed = true;
+            updateInstallPromptVisibility(false);
         });
 
-        window.setTimeout(() => {
-            if (!deferredInstallPrompt && !isStandaloneMode() && isMobileViewport() && window.localStorage.getItem(dismissedKey) !== '1') {
-                updateInstallPromptVisibility(true);
-            }
-        }, 1800);
+        window.setTimeout(maybeShowPrompt, 1200);
     };
 
     const initPhotoPreview = () => {
@@ -262,6 +278,52 @@
         syncDots();
     };
 
+    const initQuickMenuToggle = () => {
+        const toggle = document.getElementById('QuickMenuToggle');
+        const extra = document.getElementById('QuickMenuExtra');
+
+        if (!toggle || !extra) {
+            return;
+        }
+
+        toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            extra.hidden = expanded;
+            toggle.classList.toggle('isActive', !expanded);
+        });
+    };
+
+    const initStatusToggle = () => {
+        const button = document.getElementById('StatusToggleButton');
+
+        if (!button) {
+            return;
+        }
+
+        const inputId = button.getAttribute('data-target-input');
+        const input = inputId ? document.getElementById(inputId) : null;
+        const activeValue = button.getAttribute('data-status-active') || 'Active';
+        const inactiveValue = button.getAttribute('data-status-inactive') || 'Inactive';
+
+        if (!(input instanceof HTMLInputElement)) {
+            return;
+        }
+
+        const sync = (isActive) => {
+            input.value = isActive ? activeValue : inactiveValue;
+            button.classList.toggle('isActive', isActive);
+            button.classList.toggle('isInactive', !isActive);
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        };
+
+        sync(input.value === activeValue);
+
+        button.addEventListener('click', () => {
+            sync(input.value !== activeValue);
+        });
+    };
+
     const initReportWizard = () => {
         const form = document.getElementById('ReportWizardForm');
         if (!form) {
@@ -354,7 +416,7 @@
             const isKeyboardOpen = keyboardHeight > 140;
 
             document.body.classList.toggle('KeyboardOpen', isKeyboardOpen);
-            root.style.setProperty('--KeyboardInset', isKeyboardOpen ? '0px' : '0px');
+            root.style.setProperty('--KeyboardInset', '0px');
 
             if (isKeyboardOpen) {
                 scrollFocusedFieldIntoView();
@@ -371,13 +433,22 @@
     document.addEventListener('DOMContentLoaded', () => {
         registerServiceWorker();
         initAos();
-        initSplashScreen();
         initInstallPrompt();
         initPhotoPreview();
         initCopyButtons();
         initOvertimeToggle();
         initBannerCarousel();
+        initQuickMenuToggle();
+        initStatusToggle();
         initReportWizard();
         initViewportAssist();
+    });
+
+    window.addEventListener('pageshow', () => {
+        initAos();
+        if (isStandaloneMode()) {
+            window.localStorage.setItem('trace-installed', '1');
+            updateInstallPromptVisibility(false);
+        }
     });
 })();

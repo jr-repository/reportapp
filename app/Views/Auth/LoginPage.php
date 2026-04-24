@@ -1,39 +1,45 @@
 <?= $this->extend('Layouts/MobileLayout') ?>
 
 <?= $this->section('content') ?>
-<section class="AuthScreen">
-    <div class="AuthBrand">
-        <img src="<?= trace_logo_url() ?>" alt="<?= esc(trace_app_name()) ?>" class="BrandLogo">
-        <p class="Eyebrow">Enterprise Mobile Reporting</p>
-        <h1><?= esc(trace_app_name()) ?></h1>
-        <p class="AuthTagline"><?= esc(trace_app_tagline()) ?></p>
-        <p>Masuk ke aplikasi pelaporan harian yang rapi, profesional, dan siap dipakai sebagai PWA di perangkat mobile.</p>
-    </div>
-
-    <div class="GlassCard">
-        <div class="CardHeading isAuth">
-            <h2>Masuk ke Akun</h2>
-            <span>Akses cepat & aman</span>
+<section class="AuthScreen isLoginShowcase">
+    <div class="LoginCard">
+        <div class="LoginHero">
+            <div class="LoginHeroBrand">
+                <img src="<?= trace_logo_url() ?>" alt="<?= esc(trace_app_name()) ?>" class="BrandLogo">
+                <strong><?= esc(trace_app_name()) ?></strong>
+                <span><?= esc(trace_app_tagline()) ?></span>
+            </div>
+            <div class="LoginHeroWave"></div>
         </div>
-        <form method="post" action="<?= base_url('login') ?>" class="StackForm">
-            <?= csrf_field() ?>
-            <label class="FieldBlock">
-                <span>Email / Username</span>
-                <input type="text" name="login" value="<?= esc(old('login')) ?>" placeholder="Masukkan email atau username" required>
-            </label>
 
-            <label class="FieldBlock">
-                <span>Password</span>
-                <input type="password" name="password" placeholder="Masukkan password" required>
-            </label>
+        <div class="LoginFormPanel GlassCard">
+            <div class="CardHeading isAuth isCentered">
+                <h2>Welcome Back</h2>
+                <span>Masuk ke akun Anda</span>
+            </div>
 
-            <button type="submit" class="PrimaryButton">Login</button>
-        </form>
-    </div>
+            <form method="post" action="<?= base_url('login') ?>" class="StackForm">
+                <?= csrf_field() ?>
+                <label class="FieldBlock">
+                    <span>Email / Username</span>
+                    <input type="text" name="login" value="<?= esc(old('login')) ?>" placeholder="Masukkan email atau username" required>
+                </label>
 
-    <div class="AuthFooterCard">
-        <span>Belum punya akun?</span>
-        <a href="<?= base_url('register') ?>">Daftar sebagai Supervisor / Pelaksana</a>
+                <label class="FieldBlock">
+                    <span>Password</span>
+                    <input type="password" name="password" placeholder="Masukkan password" required>
+                </label>
+
+                <button type="submit" class="PrimaryButton">Login</button>
+            </form>
+
+            <div class="AuthDivider"><span>OR</span></div>
+
+            <div class="AuthFooterInline">
+                <span>Belum punya akun?</span>
+                <a href="<?= base_url('register') ?>">Sign Up</a>
+            </div>
+        </div>
     </div>
 </section>
 <?= $this->endSection() ?>

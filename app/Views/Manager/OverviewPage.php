@@ -1,29 +1,54 @@
 <?= $this->extend('Layouts/MobileLayout') ?>
 
 <?= $this->section('content') ?>
+<?php
+$totalReports = array_sum(array_map(static fn (array $item): int => (int) ($item['total_report'] ?? 0), $overview['trend']));
+$activeDays = count($overview['trend']);
+?>
 <?= view('Components/PageHeader', [
     'eyebrow' => 'TRACE Insight',
     'title' => 'Trend & Rekap',
-    'subtitle' => 'Ringkasan progres pelaporan dan cuaca kerja dalam tampilan ringkas.',
+    'subtitle' => 'Ringkasan progres pelaporan dan cuaca kerja.',
 ]) ?>
 
-<section class="StatGrid">
-    <?php foreach ($overview['trend'] as $item) : ?>
-        <article class="MetricCard">
-            <span class="MetricLabel"><?= esc(date('d M', strtotime($item['report_date']))) ?></span>
-            <strong><?= esc((string) $item['total_report']) ?> laporan</strong>
-        </article>
-    <?php endforeach; ?>
+<section class="CompactStatGrid">
+    <article class="MiniMetricCard">
+        <span class="MetricLabel">Total Laporan</span>
+        <strong><?= esc((string) $totalReports) ?></strong>
+    </article>
+    <article class="MiniMetricCard">
+        <span class="MetricLabel">Hari Aktif</span>
+        <strong><?= esc((string) $activeDays) ?></strong>
+    </article>
+</section>
+
+<section class="InfoCard">
+    <div class="CardHeading">
+        <h2>Trend 7 Hari</h2>
+        <span><?= esc((string) count($overview['trend'])) ?> titik</span>
+    </div>
+    <div class="TrendMetricGrid">
+        <?php foreach ($overview['trend'] as $item) : ?>
+            <article class="MetricCard isTrend">
+                <span class="MetricLabel"><?= esc(date('d M', strtotime($item['report_date']))) ?></span>
+                <strong><?= esc((string) $item['total_report']) ?></strong>
+                <p><?= esc((int) $item['total_report'] === 1 ? 'laporan' : 'laporan') ?></p>
+            </article>
+        <?php endforeach; ?>
+    </div>
 </section>
 
 <section class="InfoCard">
     <div class="CardHeading">
         <h2>Distribusi Cuaca</h2>
-        <span>30 hari terakhir</span>
+        <span>30 hari</span>
     </div>
-    <div class="TagList">
+    <div class="WeatherSummaryGrid">
         <?php foreach ($overview['weatherSummary'] as $item) : ?>
-            <span class="DataTag"><?= esc($item['weather_code']) ?> : <?= esc((string) $item['total']) ?></span>
+            <article class="WeatherSummaryCard">
+                <strong><?= esc($item['weather_code']) ?></strong>
+                <span><?= esc((string) $item['total']) ?> hari</span>
+            </article>
         <?php endforeach; ?>
     </div>
 </section>
@@ -35,7 +60,7 @@
     </div>
     <div class="StatusList">
         <?php foreach ($reports as $report) : ?>
-            <div class="ReportCard">
+            <div class="ReportCard isTrend">
                 <div>
                     <strong><?= esc($report['worker_name']) ?></strong>
                     <p><?= esc(date('d M Y', strtotime($report['report_date']))) ?> • <?= esc($report['status']) ?></p>

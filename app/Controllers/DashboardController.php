@@ -15,6 +15,7 @@ class DashboardController extends BaseController
     {
         return $this->page('Dashboard/HomePage', [
             'pageTitle' => 'Dashboard',
+            'pageClass' => 'HomePage',
             'homeData'  => $this->dashboardService->getHomeData(),
         ]);
     }

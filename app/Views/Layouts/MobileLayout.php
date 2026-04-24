@@ -25,16 +25,8 @@
     <link rel="stylesheet" href="<?= base_url('Assets/Vendor/AOS/aos.css?v=' . $aosCssVersion) ?>">
     <link rel="stylesheet" href="<?= base_url('Assets/Css/MobileApp.css?v=' . $cssVersion) ?>">
 </head>
-<body class="MobileBody <?= esc($pageClass ?? '') ?>">
+<body class="MobileBody <?= esc($pageClass ?? '') ?>" data-page-class="<?= esc($pageClass ?? '') ?>">
     <div class="AmbientBackground"></div>
-    <div class="AppSplashScreen" id="AppSplashScreen" aria-hidden="true">
-        <div class="SplashBackdrop"></div>
-        <div class="SplashContent">
-            <img src="<?= trace_logo_url() ?>" alt="<?= esc($appName ?? trace_app_name()) ?>" class="SplashLogo" data-aos="zoom-in" data-aos-duration="700">
-            <p class="SplashName" data-aos="fade-up" data-aos-delay="120"><?= esc($appName ?? trace_app_name()) ?></p>
-            <p class="SplashTagline" data-aos="fade-up" data-aos-delay="220"><?= esc($appTagline ?? trace_app_tagline()) ?></p>
-        </div>
-    </div>
     <div class="DeviceWrap">
         <div class="MobileFrame">
             <?php if (($isAuthenticated ?? false) === true) : ?>

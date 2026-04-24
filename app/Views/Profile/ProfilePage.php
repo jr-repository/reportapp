@@ -1,10 +1,32 @@
 <?= $this->extend('Layouts/MobileLayout') ?>
 
 <?= $this->section('content') ?>
+<?php $profilePhotoUrl = trace_user_photo_url($currentUser ?? null); ?>
 <section class="ProfileHeroCard">
-    <div class="ProfileHeroAvatar"><?= esc(strtoupper(substr((string) ($currentUser['full_name'] ?? 'U'), 0, 1))) ?></div>
+    <div class="ProfileHeroAvatar">
+        <?php if ($profilePhotoUrl !== null) : ?>
+            <img src="<?= esc($profilePhotoUrl) ?>" alt="<?= esc($currentUser['full_name'] ?? trace_app_name()) ?>" class="ProfileHeroPhoto">
+        <?php else : ?>
+            <?= esc(trace_user_initial($currentUser ?? null)) ?>
+        <?php endif; ?>
+    </div>
     <h1><?= esc($currentUser['full_name'] ?? '-') ?></h1>
     <p><?= esc($currentUser['role_name'] ?? '-') ?></p>
+</section>
+
+<section class="InfoCard">
+    <div class="CardHeading">
+        <h2>Foto Profil</h2>
+        <span>Maks. 3 MB</span>
+    </div>
+    <form method="post" action="<?= base_url('profile/photo') ?>" enctype="multipart/form-data" class="StackForm">
+        <?= csrf_field() ?>
+        <label class="FieldBlock">
+            <span>Upload Foto</span>
+            <input type="file" name="profilePhoto" accept="image/png,image/jpeg,image/webp" required>
+        </label>
+        <button type="submit" class="PrimaryButton">Update Foto</button>
+    </form>
 </section>
 
 <section class="InfoCard">
@@ -23,7 +45,7 @@
 <section class="InfoCard">
     <div class="CardHeading">
         <h2>Endpoint API JWT</h2>
-        <span>Untuk akses mobile process / integrasi</span>
+        <span>Integrasi mobile</span>
     </div>
     <div class="DetailList">
         <div><span>Issue Token</span><strong>/api/auth/token</strong></div>

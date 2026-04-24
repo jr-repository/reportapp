@@ -15,6 +15,7 @@
     <form method="post" action="<?= base_url('admin/users/save') ?>" class="StackForm">
         <?= csrf_field() ?>
         <input type="hidden" name="userId" value="<?= esc((string) ($editUser['id'] ?? '')) ?>">
+        <input type="hidden" name="status" id="StatusInput" value="<?= esc(old('status', $editUser['status'] ?? 'Active')) ?>">
 
         <label class="FieldBlock">
             <span>Nama Lengkap</span>
@@ -43,14 +44,22 @@
                     <?php endforeach; ?>
                 </select>
             </label>
+        </div>
 
-            <label class="FieldBlock">
-                <span>Status</span>
-                <select name="status" required>
-                    <option value="Active" <?= old('status', $editUser['status'] ?? 'Active') === 'Active' ? 'selected' : '' ?>>Active</option>
-                    <option value="Inactive" <?= old('status', $editUser['status'] ?? 'Active') === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
-                </select>
-            </label>
+        <div class="StatusToggleField">
+            <span>Status User</span>
+            <button
+                type="button"
+                class="UserStatusToggle <?= old('status', $editUser['status'] ?? 'Active') === 'Active' ? 'isActive' : 'isInactive' ?>"
+                id="StatusToggleButton"
+                data-target-input="StatusInput"
+                data-status-active="Active"
+                data-status-inactive="Inactive"
+                aria-pressed="<?= old('status', $editUser['status'] ?? 'Active') === 'Active' ? 'true' : 'false' ?>"
+                title="Toggle status user"
+            >
+                <?= trace_icon('toggle') ?>
+            </button>
         </div>
 
         <label class="FieldBlock">
@@ -80,9 +89,8 @@
                     <p><?= esc($user['role_name']) ?> • <?= esc($user['email']) ?></p>
                 </div>
                 <div class="InlineActions">
-                    <span class="StatusBadge <?= $user['status'] === 'Active' ? 'isDone' : 'isPending' ?>"><?= esc($user['status']) ?></span>
                     <a href="<?= base_url('admin/users?edit=' . $user['id']) ?>" class="InlineAction isIconOnly" aria-label="Edit user" title="Edit user"><?= trace_icon('edit') ?></a>
-                    <a href="<?= base_url('admin/users/toggle/' . $user['id']) ?>" class="InlineAction isIconOnly" aria-label="Toggle status user" title="Toggle status user"><?= trace_icon('toggle') ?></a>
+                    <a href="<?= base_url('admin/users/toggle/' . $user['id']) ?>" class="InlineAction isIconOnly UserStatusLink <?= $user['status'] === 'Active' ? 'isActive' : 'isInactive' ?>" aria-label="Toggle status user" title="Toggle status user"><?= trace_icon('toggle') ?></a>
                 </div>
             </div>
         <?php endforeach; ?>

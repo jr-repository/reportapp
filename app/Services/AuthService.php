@@ -62,13 +62,14 @@ class AuthService
         $session->regenerate();
         $sessionId = session_id();
         $session->set('authUser', [
-            'id'        => (int) $user['id'],
-            'full_name' => $user['full_name'],
-            'email'     => $user['email'],
-            'username'  => $user['username'],
-            'role_code' => $user['role_code'],
-            'role_name' => $user['role_name'],
-            'status'    => $user['status'],
+            'id'                => (int) $user['id'],
+            'full_name'         => $user['full_name'],
+            'email'             => $user['email'],
+            'username'          => $user['username'],
+            'role_code'         => $user['role_code'],
+            'role_name'         => $user['role_name'],
+            'status'            => $user['status'],
+            'profile_photo_path'=> $user['profile_photo_path'] ?? null,
         ]);
 
         $this->userModel->update($user['id'], ['last_login_at' => date('Y-m-d H:i:s')]);
@@ -106,9 +107,32 @@ class AuthService
 
     public function currentUser(): ?array
     {
-        $user = $this->resolveSession()->get('authUser');
+        $sessionUser = $this->resolveSession()->get('authUser');
 
-        return is_array($user) ? $user : null;
+        if (! is_array($sessionUser) || empty($sessionUser['id'])) {
+            return null;
+        }
+
+        $freshUser = $this->userModel->findDetailedById((int) $sessionUser['id']);
+
+        if ($freshUser === null || ($freshUser['status'] ?? '') !== 'Active') {
+            return null;
+        }
+
+        $authUser = [
+            'id'                 => (int) $freshUser['id'],
+            'full_name'          => $freshUser['full_name'],
+            'email'              => $freshUser['email'],
+            'username'           => $freshUser['username'],
+            'role_code'          => $freshUser['role_code'],
+            'role_name'          => $freshUser['role_name'],
+            'status'             => $freshUser['status'],
+            'profile_photo_path' => $freshUser['profile_photo_path'] ?? null,
+        ];
+
+        $this->resolveSession()->set('authUser', $authUser);
+
+        return $authUser;
     }
 
     public function isLoggedIn(): bool

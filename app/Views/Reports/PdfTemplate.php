@@ -2,8 +2,23 @@
 $report = $bundle['report'];
 $worker = $bundle['worker'];
 $location = $bundle['location'];
-$logoPath = trace_logo_path();
-$logoSrc = is_file($logoPath) ? 'file://' . str_replace(' ', '%20', $logoPath) : '';
+$embedImage = static function (string $path): string {
+    if (! is_file($path) || filesize($path) === 0) {
+        return '';
+    }
+
+    $mime = mime_content_type($path) ?: 'image/png';
+
+    return 'data:' . $mime . ';base64,' . base64_encode((string) file_get_contents($path));
+};
+
+$companyLogoPath = FCPATH . 'Assets/Image/companylogo.png';
+$logoSrc = $embedImage($companyLogoPath);
+
+if ($logoSrc === '') {
+    $logoSrc = $embedImage(trace_logo_path());
+}
+
 $formatValue = static fn (?string $value): string => trim((string) $value) !== '' ? (string) $value : '-';
 $formatDate = static fn (?string $value): string => $value ? date('d F Y', strtotime($value)) : '-';
 ?>
@@ -30,11 +45,11 @@ $formatDate = static fn (?string $value): string => $value ? date('d F Y', strto
             vertical-align: top;
         }
         .BrandCell {
-            width: 82px;
+            width: 96px;
         }
         .BrandLogo {
-            width: 60px;
-            height: 60px;
+            width: 74px;
+            height: 74px;
             object-fit: contain;
         }
         .BrandName {
@@ -123,25 +138,27 @@ $formatDate = static fn (?string $value): string => $value ? date('d F Y', strto
             color: #607087;
         }
         .PhotoGrid {
-            margin: 0 -6px;
+            margin: 0 -5px;
             font-size: 0;
         }
         .PhotoCard {
             display: inline-block;
-            width: 46.8%;
-            margin: 0 6px 12px;
+            width: 47.4%;
+            margin: 0 5px 12px;
             vertical-align: top;
             page-break-inside: avoid;
         }
         .PhotoFrame {
-            border: 1px solid #d6deea;
+            border: 1px solid #c9d4e3;
+            border-radius: 8px;
             background: #f7f9fc;
-            padding: 6px;
+            padding: 5px;
         }
         .PhotoFrame img {
             width: 100%;
-            height: 180px;
+            height: 168px;
             object-fit: cover;
+            border-radius: 5px;
         }
         .PhotoCaption {
             margin-top: 5px;
@@ -322,11 +339,16 @@ $formatDate = static fn (?string $value): string => $value ? date('d F Y', strto
         <?php if ($bundle['photos'] !== []) : ?>
             <div class="PhotoGrid">
                 <?php foreach ($bundle['photos'] as $index => $photo) :
-                    $photoPath = 'file://' . str_replace(' ', '%20', FCPATH . str_replace('/', DIRECTORY_SEPARATOR, $photo['file_path']));
+                    $photoPath = FCPATH . str_replace('/', DIRECTORY_SEPARATOR, $photo['file_path']);
+                    $photoSrc = $embedImage($photoPath);
                     ?>
                     <div class="PhotoCard">
                         <div class="PhotoFrame">
-                            <img src="<?= esc($photoPath) ?>" alt="Dokumentasi <?= esc((string) ($index + 1)) ?>">
+                            <?php if ($photoSrc !== '') : ?>
+                                <img src="<?= esc($photoSrc) ?>" alt="Dokumentasi <?= esc((string) ($index + 1)) ?>">
+                            <?php else : ?>
+                                <div class="Muted">Foto tidak tersedia</div>
+                            <?php endif; ?>
                         </div>
                         <div class="PhotoCaption">Dokumentasi <?= esc((string) ($index + 1)) ?></div>
                     </div>

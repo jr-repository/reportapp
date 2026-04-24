@@ -18,6 +18,7 @@ $routes->group('', ['filter' => 'auth'], static function (RouteCollection $route
     $routes->post('logout', 'AuthController::logout');
 
     $routes->get('profile', 'ProfileController::index');
+    $routes->post('profile/photo', 'ProfileController::uploadPhoto');
 
     $routes->get('reports/create', 'DailyReportController::create');
     $routes->get('reports/edit/(:num)', 'DailyReportController::edit/$1');
