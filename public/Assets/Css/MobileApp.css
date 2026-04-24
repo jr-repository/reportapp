@@ -2102,3 +2102,349 @@ select {
         padding: 24px 18px 86px;
     }
 }
+
+body.AuthPage {
+    overflow: hidden;
+}
+
+.AuthPage .DeviceWrap {
+    min-height: 100dvh;
+}
+
+.AuthPage .MobileFrame {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, var(--BrandSecondary) 0%, #274f81 52%, var(--BrandPrimary) 100%);
+}
+
+@media (min-width: 431px) {
+    .AuthPage .DeviceWrap {
+        padding: 14px 0;
+    }
+
+    .AuthPage .MobileFrame {
+        min-height: calc(100vh - 28px);
+        border-radius: 30px;
+        box-shadow: 0 28px 64px rgba(12, 23, 43, 0.28);
+    }
+}
+
+.AuthPage .MobileShell {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.AuthPage .MobileShell > .FlashMessage {
+    margin: max(env(safe-area-inset-top), 10px) 12px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.AuthPage .MobileShell > .FlashMessage:last-child {
+    margin-bottom: 12px;
+}
+
+.AuthPage .PwaInstallPrompt {
+    bottom: max(12px, calc(env(safe-area-inset-bottom) + 10px));
+}
+
+.AuthScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0;
+    flex: 1;
+    width: 100%;
+    min-height: 100%;
+    padding: 0;
+}
+
+.AuthScreen.isLoginShowcase {
+    display: flex;
+    overflow: hidden;
+}
+
+.AuthScreen.isRegisterShowcase {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+}
+
+.LoginCard {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-radius: 0;
+    box-shadow: none;
+    background: linear-gradient(145deg, #1f5f96 0%, #2d4bc9 52%, #b11226 100%);
+}
+
+.LoginHero {
+    position: relative;
+    min-height: clamp(250px, 42dvh, 330px);
+    padding: max(28px, calc(env(safe-area-inset-top) + 18px)) 22px 102px;
+    overflow: hidden;
+}
+
+.LoginHero::before {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    top: -76px;
+    right: -50px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.LoginHero::after {
+    content: "";
+    position: absolute;
+    width: 152px;
+    height: 152px;
+    left: -60px;
+    bottom: 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.LoginHeroBrand {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    text-align: center;
+    color: #fff;
+}
+
+.LoginHeroBrand strong {
+    font-size: clamp(1.4rem, 4vw, 1.85rem);
+}
+
+.LoginHeroBrand span {
+    max-width: 220px;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.LoginHeroWave {
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: -1px;
+    height: 94px;
+    background: #ffffff;
+    border-top-left-radius: 58% 100%;
+    border-top-right-radius: 42% 100%;
+}
+
+.LoginHeroWave::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 23%;
+    width: 34%;
+    height: 20px;
+    border-bottom-left-radius: 999px;
+    border-bottom-right-radius: 999px;
+    background: linear-gradient(135deg, #4e61ff 0%, var(--BrandPrimary) 100%);
+    transform: rotate(-2deg);
+}
+
+.LoginFormPanel {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: -18px 0 0;
+    padding: 28px 22px max(18px, calc(env(safe-area-inset-bottom) + 12px));
+    border: 0;
+    border-radius: 68px 68px 0 0 !important;
+    box-shadow: none;
+}
+
+.LoginFormPanel .CardHeading.isAuth,
+.RegisterFormPanel .CardHeading.isAuth {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.LoginFormPanel .CardHeading.isAuth h2,
+.RegisterFormPanel .CardHeading.isAuth h2 {
+    font-size: 1rem;
+}
+
+.LoginFormPanel .CardHeading.isAuth span,
+.RegisterFormPanel .CardHeading.isAuth span {
+    font-size: 0.7rem;
+    color: #8a93a4;
+}
+
+.LoginFormPanel .StackForm {
+    gap: 12px;
+}
+
+.LoginFormPanel .FieldBlock {
+    gap: 8px;
+}
+
+.LoginFormPanel input {
+    min-height: 42px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: #f7f4f6;
+    border-color: rgba(215, 221, 231, 0.88);
+    box-shadow: inset 0 1px 2px rgba(12, 23, 43, 0.03);
+}
+
+.isLoginShowcase .LoginFormPanel .PrimaryButton {
+    min-height: 44px;
+    margin-top: 4px;
+    background: #ffffff;
+    color: var(--BrandSecondary);
+    border: 1.5px solid rgba(23, 52, 95, 0.9);
+    box-shadow: none;
+}
+
+.RegisterFormPanel .PrimaryButton {
+    min-height: 44px;
+    margin-top: 2px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--BrandSecondary), var(--BrandPrimary));
+    color: #fff;
+}
+
+.AuthDivider {
+    position: relative;
+    margin: 18px 0 10px;
+    padding-top: 0;
+    text-align: center;
+}
+
+.AuthDivider::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid rgba(215, 221, 231, 0.92);
+}
+
+.AuthDivider span {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    padding: 0 12px;
+    background: #fff;
+    color: var(--TextMuted);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.isLoginShowcase .AuthDivider {
+    margin-top: auto;
+    padding-top: 14px;
+}
+
+.AuthFooterInline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding-top: 0;
+    flex-wrap: wrap;
+    font-size: 0.68rem;
+    color: var(--TextMuted);
+}
+
+.AuthFooterInline a {
+    font-weight: 700;
+    color: var(--BrandSecondary);
+}
+
+.RegisterCard {
+    min-height: 100%;
+}
+
+.RegisterHero {
+    min-height: clamp(220px, 34dvh, 286px);
+    padding-bottom: 96px;
+}
+
+.RegisterFormPanel {
+    flex: 0 0 auto;
+    min-height: auto;
+    margin-top: -20px;
+    padding-top: 24px;
+}
+
+.RegisterFormPanel .StackForm {
+    gap: 10px;
+}
+
+.RegisterFormPanel input {
+    min-height: 42px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: #f7f4f6;
+    border-color: rgba(215, 221, 231, 0.88);
+}
+
+.AuthHelperText {
+    margin: -6px 0 12px;
+    text-align: center;
+    color: #7f8796;
+    font-size: 0.66rem;
+    line-height: 1.5;
+}
+
+.AuthFooterInline.isRegisterFooter {
+    margin-top: 14px;
+}
+
+@media (max-width: 390px) {
+    .LoginHero {
+        min-height: 232px;
+        padding: max(22px, calc(env(safe-area-inset-top) + 12px)) 18px 92px;
+    }
+
+    .LoginFormPanel {
+        padding-inline: 18px;
+        border-top-left-radius: 58px !important;
+        border-top-right-radius: 58px !important;
+    }
+
+    .LoginHeroBrand strong {
+        font-size: 1.25rem;
+    }
+
+    .LoginHeroBrand span {
+        max-width: 200px;
+        font-size: 0.72rem;
+    }
+
+    .RegisterHero {
+        min-height: 212px;
+        padding-bottom: 84px;
+    }
+
+    .RegisterFormPanel {
+        padding-top: 22px;
+    }
+
+    .AuthHelperText {
+        font-size: 0.64rem;
+    }
+}

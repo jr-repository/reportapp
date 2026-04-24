@@ -13,7 +13,7 @@ class RoleFilter implements FilterInterface
         $currentUser = service('authService')->currentUser();
 
         if ($currentUser === null) {
-            return redirect()->to(base_url('login'))->with('error', 'Silakan login terlebih dahulu.');
+            return redirect()->to(base_url('login'))->with('error');
         }
 
         $allowedRoles = is_array($arguments) ? $arguments : [];

@@ -67,6 +67,6 @@ class AuthController extends BaseController
     {
         $this->authService->logout();
 
-        return redirect()->to(base_url('login'))->with('success', 'Anda sudah logout.');
+        return redirect()->to(base_url('login'));
     }
 }
