@@ -4,6 +4,61 @@
 
 Nama lengkap aplikasi ini adalah **Tracking Report & Activity Control Engine**.
 
+## Preview Aplikasi
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Login</strong><br>
+      <a href="preview/login.png">
+        <img src="preview/login.png" alt="Preview halaman login TRACE" width="100%">
+      </a>
+    </td>
+    <td width="50%" align="center">
+      <strong>Sign Up</strong><br>
+      <a href="preview/signup.png">
+        <img src="preview/signup.png" alt="Preview halaman sign up TRACE" width="100%">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Dashboard</strong><br>
+      <a href="preview/dashboard.png">
+        <img src="preview/dashboard.png" alt="Preview dashboard TRACE" width="100%">
+      </a>
+    </td>
+    <td width="50%" align="center">
+      <strong>Input Laporan</strong><br>
+      <a href="preview/report.png">
+        <img src="preview/report.png" alt="Preview form laporan TRACE" width="100%">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Detail Laporan</strong><br>
+      <a href="preview/report-detail.png">
+        <img src="preview/report-detail.png" alt="Preview detail laporan TRACE" width="100%">
+      </a>
+    </td>
+    <td width="50%" align="center">
+      <strong>Master Data</strong><br>
+      <a href="preview/masterdata.png">
+        <img src="preview/masterdata.png" alt="Preview master data TRACE" width="100%">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <strong>Profile</strong><br>
+      <a href="preview/profile.png">
+        <img src="preview/profile.png" alt="Preview halaman profile TRACE" width="49%">
+      </a>
+    </td>
+  </tr>
+</table>
+
 ## Ringkasan Project
 
 Project ini dibuat untuk mempermudah proses:
@@ -104,6 +159,7 @@ Project 1/
 │   ├── Services/        # Business logic aplikasi
 │   └── Views/           # Tampilan halaman
 ├── db/                  # File database schema dan data
+├── preview/             # Screenshot preview aplikasi untuk README/repository
 ├── public/
 │   ├── Assets/          # CSS, JS, image, vendor assets
 │   └── Uploads/         # File upload user dan laporan

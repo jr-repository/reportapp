@@ -1,0 +1,648 @@
+NOTES PROJECT TRACE
+Dokumen pendamping untuk memahami aplikasi, alur bisnis, proses pembuatan, dan gambaran teknis secara sederhana
+Versi catatan: 26 April 2026
+
+========================================================================
+1. TUJUAN DOKUMEN
+========================================================================
+
+Dokumen ini dibuat agar orang awam tetap bisa memahami project TRACE
+dengan bahasa yang sederhana, rapi, dan profesional.
+
+Tujuan utamanya:
+- membantu memahami fungsi aplikasi
+- membantu menjelaskan alur kerja aplikasi
+- membantu memahami cara aplikasi ini dibuat
+- membantu menjawab pertanyaan saat presentasi atau diskusi
+- membantu mempelajari bagian penting project secara bertahap
+
+
+========================================================================
+2. GAMBARAN SINGKAT APLIKASI
+========================================================================
+
+Nama aplikasi:
+TRACE
+
+Kepanjangan:
+Tracking Report & Activity Control Engine
+
+Jenis aplikasi:
+Mobile web / web app yang dirancang nyaman digunakan dari handphone
+dan bisa dipasang seperti aplikasi melalui home screen.
+
+Fungsi utama:
+Aplikasi ini dipakai untuk membuat laporan harian pekerjaan lapangan
+secara rapi, cepat, dan terstruktur.
+
+Masalah yang diselesaikan:
+- laporan harian sering dibuat manual dan tidak seragam
+- dokumentasi foto sering tercecer
+- monitoring laporan per user sulit dilakukan
+- admin dan manager membutuhkan rekap yang cepat
+- dibutuhkan output laporan yang bisa dilihat ulang, dibagikan,
+  dan diarsipkan
+
+Hasil utama dari aplikasi:
+- laporan harian tersimpan dalam sistem
+- laporan dapat disimpan sebagai draft
+- laporan dapat disubmit final
+- sistem dapat membuat ringkasan WhatsApp
+- sistem dapat menghasilkan PDF laporan
+- admin dan manager dapat memonitor seluruh laporan
+
+
+========================================================================
+3. SIAPA PENGGUNANYA
+========================================================================
+
+1. Supervisor / PIC / Pelaksana
+Pengguna lapangan yang paling sering memakai aplikasi.
+Tugasnya mengisi laporan harian, menyimpan draft, review, submit final,
+melihat detail laporan, dan membuka PDF.
+
+2. Admin
+Pengguna yang mengelola data user dan memonitor laporan.
+Tugasnya menambah user, mengedit user, mengaktifkan atau menonaktifkan
+user, serta memfilter laporan berdasarkan tanggal, user, dan status.
+
+3. Manager
+Pengguna yang fokus pada monitoring dan gambaran umum.
+Tugasnya melihat trend laporan, distribusi cuaca, dan laporan terbaru.
+
+Catatan penting:
+User yang register sendiri melalui halaman register akan masuk ke role
+Supervisor.
+
+
+========================================================================
+4. FLOW BISNIS APLIKASI
+========================================================================
+
+Flow utama aplikasi:
+
+Login
+-> masuk ke dashboard
+-> pilih buat laporan
+-> isi laporan bertahap
+-> simpan draft
+-> review checklist
+-> submit final
+-> sistem membuat ringkasan WhatsApp
+-> sistem menyiapkan PDF
+-> admin/manager memonitor hasil laporan
+
+Penjelasan sederhananya:
+
+1. User login ke aplikasi.
+2. User membuat laporan harian berdasarkan pekerjaan di lapangan.
+3. Jika belum yakin, laporan bisa disimpan dulu sebagai draft.
+4. Setelah lengkap, user masuk ke halaman review.
+5. Dari halaman review, user submit laporan final.
+6. Setelah submit, laporan memiliki status final, bisa dilihat detailnya,
+   bisa dibuka PDF-nya, dan bisa dipakai untuk ringkasan WhatsApp.
+7. Admin dan manager dapat memantau laporan yang sudah masuk.
+
+
+========================================================================
+5. BAGIAN-BAGIAN LAPORAN YANG DIISI USER
+========================================================================
+
+Form laporan di aplikasi ini dibuat seperti wizard bertahap agar lebih
+mudah diisi dari handphone. Bagian yang diisi adalah:
+
+1. Identitas Laporan
+- tanggal laporan
+- supervisor / pelaksana
+
+2. Lokasi, Foto, dan Cuaca
+- lokasi terkini
+- area pekerjaan
+- keterangan tambahan lokasi
+- foto dokumentasi pekerjaan
+- kondisi cuaca
+
+3. Update Pekerja dan Realisasi
+- jumlah tenaga kerja per kategori
+- tambahan posisi jika belum tersedia di pilihan
+- ringkasan realisasi pekerjaan
+
+4. Alat Berat, Alat Ringan, dan Material
+- jumlah alat berat per kategori
+- alat berat tambahan jika belum tersedia di pilihan
+- ringkasan alat kerja ringan
+- ringkasan material dan bahan kerja
+
+5. Kendala, Rencana Besok, dan Lembur
+- bentuk kendala
+- penyebab kendala
+- dampak kendala
+- catatan tambahan
+- rencana pekerjaan esok hari
+- status lembur
+- jam mulai dan jam selesai lembur
+- ringkasan lembur
+
+Catatan operasional penting:
+- minimal satu foto dokumentasi wajib diunggah
+- format foto laporan yang diterima: JPG, JPEG, PNG, WEBP
+- ukuran maksimal per foto laporan: 5 MB
+- foto profil maksimal 3 MB
+
+
+========================================================================
+6. MODUL YANG ADA DI DALAM APLIKASI
+========================================================================
+
+1. Authentication
+Modul login, register, logout, dan pengecekan hak akses user.
+
+2. Dashboard
+Halaman utama setelah login yang menampilkan menu cepat, status harian,
+summary laporan, dan leaderboard pengisian.
+
+3. Input Laporan Harian
+Halaman inti untuk membuat dan mengedit laporan.
+Form dibagi menjadi beberapa step agar mudah dipakai di mobile.
+
+4. Review dan Submit Final
+Halaman pengecekan sebelum laporan dikirim final.
+Di sini user melihat checklist kelengkapan laporan.
+
+5. Detail Laporan
+Halaman untuk melihat hasil akhir laporan secara lengkap.
+Di sini juga tersedia ringkasan WhatsApp dan akses ke PDF.
+
+6. PDF Export
+Sistem dapat mengubah laporan menjadi file PDF yang lebih formal
+untuk dokumentasi atau pelaporan.
+
+7. Monitoring Admin
+Admin dapat melihat daftar laporan, memfilter berdasarkan tanggal,
+user, dan status.
+
+8. Manajemen User
+Admin dapat menambah, mengubah, dan mengaktifkan atau menonaktifkan akun.
+
+9. Manager Overview
+Manager dapat melihat trend laporan 7 hari, distribusi cuaca 30 hari,
+dan daftar laporan terbaru.
+
+10. Profil
+User dapat melihat data akun dan mengganti foto profil.
+
+11. API JWT
+Sistem menyediakan endpoint API untuk kebutuhan integrasi di masa depan.
+
+12. PWA / Mobile App Behavior
+Aplikasi punya manifest dan service worker sehingga bisa terasa seperti
+aplikasi mobile dan dapat dipasang ke home screen.
+
+
+========================================================================
+7. OUTPUT YANG DIHASILKAN APLIKASI
+========================================================================
+
+Output utama aplikasi ini adalah:
+
+- data laporan harian yang tersimpan di database
+- status laporan: Draft atau Submitted
+- ringkasan WhatsApp
+- PDF laporan
+- monitoring laporan untuk admin dan manager
+- trend dan summary untuk kebutuhan pengawasan
+
+Intinya:
+aplikasi ini bukan hanya tempat input data, tetapi juga tempat
+pengelolaan, monitoring, dan dokumentasi hasil pekerjaan lapangan.
+
+
+========================================================================
+8. CARA KERJA APLIKASI DARI SISI SISTEM
+========================================================================
+
+Jika dijelaskan dengan bahasa sederhana, alur teknisnya seperti ini:
+
+User klik menu / tombol
+-> sistem membaca alamat halaman
+-> controller menerima permintaan
+-> service memproses logika bisnis
+-> model menyimpan atau mengambil data dari database
+-> hasil dikirim ke tampilan
+-> user melihat hasil di layar
+
+Arti istilahnya:
+
+- Route
+  Daftar alamat halaman dan endpoint.
+  Ibaratnya seperti peta jalan.
+
+- Controller
+  Penerima permintaan dari user.
+  Ibaratnya seperti petugas front office yang menerima perintah.
+
+- Service
+  Tempat logika utama aplikasi berjalan.
+  Ibaratnya seperti bagian operasional yang mengerjakan proses inti.
+
+- Model
+  Penghubung antara aplikasi dan database.
+  Ibaratnya seperti petugas arsip yang mengambil atau menyimpan data.
+
+- View
+  Tampilan yang dilihat user di browser.
+
+- Database
+  Tempat penyimpanan data utama aplikasi.
+
+
+========================================================================
+9. TEKNOLOGI YANG DIGUNAKAN DAN ALASANNYA
+========================================================================
+
+1. PHP 8.2
+Bahasa pemrograman utama untuk backend.
+Dipakai karena stabil, populer, dan cocok untuk aplikasi web bisnis.
+
+2. CodeIgniter 4
+Framework PHP yang dipakai untuk menyusun struktur project dengan rapi.
+Framework ini membantu membuat route, controller, model, validation,
+security, dan banyak hal teknis lainnya.
+
+3. MySQL / MariaDB
+Dipakai sebagai database untuk menyimpan data user, laporan, foto,
+status, dan data pendukung lainnya.
+
+4. HTML, CSS, JavaScript
+Dipakai untuk membangun tampilan aplikasi yang ramah mobile.
+
+5. Dompdf
+Library yang dipakai untuk mengubah data laporan menjadi file PDF.
+
+6. JWT
+Dipakai untuk membuat access token dan refresh token pada API.
+Ini berguna jika nanti aplikasi ingin diintegrasikan dengan sistem lain
+atau mobile app terpisah.
+
+7. Fonnte API
+Dipakai untuk integrasi pengiriman ringkasan laporan ke WhatsApp.
+
+8. Service Worker dan Manifest
+Dipakai agar aplikasi punya perilaku seperti aplikasi mobile / PWA,
+misalnya bisa dipasang ke home screen dan menyimpan asset statis tertentu.
+
+9. Session dan Role Filter
+Dipakai untuk memastikan user yang login hanya dapat mengakses
+halaman yang sesuai dengan hak aksesnya.
+
+10. CSRF dan Secure Headers
+Dipakai untuk membantu keamanan form dan respons aplikasi.
+
+
+========================================================================
+10. STRUKTUR DATA UTAMA DALAM APLIKASI
+========================================================================
+
+Secara konsep, data aplikasi ini dibagi menjadi 3 kelompok besar:
+
+1. Data master
+- Users
+- Roles
+- WorkerCategories
+- HeavyEquipmentCategories
+
+2. Data transaksi laporan
+- DailyReports
+- ReportLocations
+- ReportPhotos
+- ReportWorkerUpdates
+- ReportHeavyEquipmentUsages
+- ReportMaterialSummaries
+- ReportToolSummaries
+- ReportObstacleSummaries
+- ReportTomorrowPlans
+- ReportOvertimes
+
+3. Data keamanan dan sistem
+- UserSessions
+- AuditLogs
+- RefreshTokens
+
+Kenapa data laporan dipecah ke beberapa tabel?
+Supaya struktur data rapi, mudah dikembangkan, mudah diproses per bagian,
+dan lebih aman ketika suatu saat aplikasi ingin ditambah fitur baru.
+
+
+========================================================================
+11. PROSES PEMBUATAN APLIKASI INI
+========================================================================
+
+1. Analisis kebutuhan
+Tahap awal adalah memahami kebutuhan pengguna lapangan, admin,
+dan manager. Dari sini ditentukan bahwa aplikasi harus cepat,
+mobile friendly, punya draft, final submit, monitoring, PDF,
+dan opsi ringkasan WhatsApp.
+
+2. Menentukan role dan flow kerja
+Setelah kebutuhan dipahami, dibuat pembagian role:
+Supervisor, Admin, dan Manager.
+Lalu ditentukan alur kerja utamanya dari login sampai monitoring.
+
+3. Mendesain struktur data
+Data apa saja yang dibutuhkan lalu disusun ke dalam tabel-tabel,
+misalnya user, laporan, lokasi, foto, tenaga kerja, alat berat,
+material, kendala, rencana esok, dan lembur.
+
+4. Menyiapkan fondasi project
+Framework CodeIgniter 4 dipasang sebagai dasar aplikasi.
+Setelah itu disiapkan konfigurasi project, environment, routing,
+dan koneksi database.
+
+5. Membuat modul authentication
+Langkah berikutnya adalah membuat login, register, logout, session,
+dan pembatasan akses berdasarkan role.
+
+6. Membuat dashboard
+Dashboard dibangun untuk menjadi halaman utama user setelah login.
+Di halaman ini user bisa melihat menu cepat, status laporan harian,
+summary, dan leaderboard.
+
+7. Membuat form laporan bertahap
+Karena aplikasi ditujukan untuk pemakaian mobile, form dibuat dalam
+bentuk step by step agar lebih ringan dan mudah digunakan di lapangan.
+
+8. Membuat proses simpan draft
+Draft dibuat agar user tidak harus langsung submit final.
+Ini penting karena data lapangan kadang diisi bertahap.
+
+9. Membuat halaman review
+Sebelum submit final, sistem menampilkan checklist kelengkapan data
+agar user bisa memeriksa kembali isi laporan.
+
+10. Membuat submit final
+Saat submit final, status laporan berubah menjadi Submitted dan
+sistem menyimpan ringkasan WhatsApp ke data laporan.
+
+11. Membuat export PDF
+Laporan yang sudah ada dapat diubah menjadi PDF agar lebih formal
+untuk dokumentasi dan pelaporan.
+
+12. Membuat integrasi WhatsApp
+Sistem disiapkan agar ringkasan laporan dapat dikirim ke WhatsApp
+melalui Fonnte jika konfigurasi token dan target sudah tersedia.
+
+13. Membuat monitoring admin dan manager
+Admin diberi fitur filter laporan dan manajemen user.
+Manager diberi tampilan trend, distribusi cuaca, dan laporan terbaru.
+
+14. Menyiapkan API
+API berbasis JWT dibuat agar di masa depan sistem bisa diintegrasikan
+dengan aplikasi atau layanan lain.
+
+15. Uji coba dan penyempurnaan
+Setelah fitur utama selesai, dilakukan pengecekan alur, validasi form,
+upload foto, login, role, detail laporan, PDF, dan monitoring.
+
+Kesimpulannya:
+aplikasi ini dibuat secara bertahap, dimulai dari kebutuhan bisnis,
+lalu dibangun fondasinya, kemudian fitur utama, lalu pelengkap seperti
+PDF, WhatsApp, API, dan monitoring.
+
+
+========================================================================
+12. ALUR USER PER ROLE
+========================================================================
+
+1. Alur Supervisor / Pelaksana
+- login
+- masuk dashboard
+- pilih buat laporan
+- isi seluruh bagian laporan
+- simpan draft
+- review checklist
+- submit final
+- buka detail laporan
+- buka PDF jika diperlukan
+
+2. Alur Admin
+- login
+- buka monitoring laporan
+- filter laporan berdasarkan tanggal, user, status
+- buka detail laporan
+- buka PDF laporan
+- kelola user
+
+3. Alur Manager
+- login
+- buka monitoring laporan
+- buka halaman trend dan overview
+- lihat laporan terbaru
+- lihat ringkasan cuaca dan progres pelaporan
+
+
+========================================================================
+13. HAL YANG HARUS DIPELAJARI CLIENT AGAR PAHAM
+========================================================================
+
+Jika client benar-benar awam, maka fokus belajarnya tidak perlu langsung
+ke coding. Yang paling penting dipahami lebih dulu adalah:
+
+1. Tujuan bisnis aplikasi
+Client harus paham bahwa aplikasi ini dibuat untuk mempermudah laporan
+harian lapangan dan monitoring hasil kerja.
+
+2. Siapa user dan apa perannya
+Client harus hafal perbedaan Supervisor, Admin, dan Manager.
+
+3. Flow utama aplikasi
+Client harus bisa menjelaskan urutan:
+login -> isi laporan -> simpan draft -> review -> submit final
+-> lihat detail/PDF -> monitoring
+
+4. Input dan output aplikasi
+Client harus tahu data apa yang dimasukkan dan hasil apa yang keluar.
+
+5. Istilah teknis dasar
+Client cukup memahami arti sederhana dari database, backend, frontend,
+controller, service, model, session, JWT, dan PWA.
+
+6. Nilai tambah aplikasi
+Client harus paham kelebihan aplikasi ini:
+mobile friendly, laporan terstruktur, PDF, ringkasan WhatsApp,
+monitoring per role, dan siap integrasi.
+
+7. Batasan aplikasi
+Client juga perlu tahu bahwa beberapa fitur seperti WhatsApp bergantung
+pada konfigurasi token dan target yang benar.
+
+
+========================================================================
+14. ISTILAH TEKNIS SEDERHANA UNTUK ORANG AWAM
+========================================================================
+
+Backend
+Bagian belakang aplikasi yang memproses logika dan data.
+
+Frontend
+Bagian tampilan yang dilihat dan dipakai user.
+
+Database
+Tempat penyimpanan data digital.
+Ibarat lemari arsip elektronik.
+
+Route
+Daftar jalur alamat halaman.
+
+Controller
+Pengatur permintaan dari user ke sistem.
+
+Service
+Tempat logika proses utama dijalankan.
+
+Model
+Penghubung data aplikasi dengan database.
+
+View
+Halaman tampilan yang muncul di browser.
+
+Session
+Penanda bahwa user sedang login.
+
+JWT
+Token digital untuk akses API.
+
+PWA
+Web yang dibuat terasa seperti aplikasi handphone.
+
+Draft
+Status simpan sementara.
+
+Submitted
+Status laporan final yang sudah dikirim.
+
+API
+Jalur integrasi agar sistem lain bisa berkomunikasi dengan aplikasi ini.
+
+
+========================================================================
+15. FILE DAN FOLDER PENTING JIKA INGIN BELAJAR PROJECT
+========================================================================
+
+Untuk belajar project ini dari source code, urutan termudah adalah:
+
+1. README.md
+Untuk memahami ringkasan project dan setup dasar.
+
+2. app/Config/Routes.php
+Untuk melihat daftar halaman dan endpoint aplikasi.
+
+3. app/Controllers/AuthController.php
+Untuk memahami login, register, dan logout.
+
+4. app/Controllers/DashboardController.php
+Untuk memahami halaman dashboard.
+
+5. app/Controllers/DailyReportController.php
+Untuk memahami alur create, edit, review, submit, detail, dan PDF.
+
+6. app/Services/DailyReportService.php
+Ini salah satu file inti karena berisi logika utama laporan harian.
+
+7. app/Services/AuthService.php
+Untuk memahami login, session, audit, dan hak akses.
+
+8. app/Services/DashboardService.php
+Untuk memahami summary dashboard dan manager overview.
+
+9. app/Services/ReportPdfService.php
+Untuk memahami cara sistem membuat PDF.
+
+10. app/Services/TokenService.php
+Untuk memahami API token JWT.
+
+11. app/Views/Reports/
+Untuk melihat tampilan input, review, detail, dan PDF.
+
+12. app/Views/Admin/ dan app/Views/Manager/
+Untuk melihat tampilan monitoring dan overview.
+
+13. public/Assets/Js/MobileApp.js
+Untuk memahami interaksi di sisi tampilan, misalnya preview foto,
+copy ringkasan, toggle lembur, dan PWA install prompt.
+
+14. public/manifest.json dan public/service-worker.js
+Untuk memahami perilaku PWA.
+
+15. public/Uploads/
+Untuk melihat lokasi penyimpanan file upload seperti foto profil
+dan dokumentasi laporan.
+
+
+========================================================================
+16. KEAMANAN DAN KONTROL AKSES
+========================================================================
+
+Beberapa pengamanan yang ada di aplikasi ini:
+
+- user wajib login untuk masuk ke halaman utama
+- role digunakan untuk membatasi akses halaman tertentu
+- form memakai CSRF protection untuk request web
+- API memakai JWT untuk akses terproteksi
+- session user dicatat saat login
+- audit log mencatat aktivitas penting seperti register, login,
+  save draft, submit report, dan logout
+- user inactive tidak dapat dipakai login normal
+
+Jika ditanya secara singkat soal keamanan:
+"Aplikasi ini memakai login, pembagian role, session, proteksi form,
+dan token JWT untuk endpoint API."
+
+
+========================================================================
+17. POIN NILAI TAMBAH APLIKASI
+========================================================================
+
+Nilai tambah aplikasi TRACE yang bisa dijelaskan ke client:
+
+- mobile friendly, cocok untuk penggunaan lapangan
+- input laporan dibuat bertahap agar tidak membingungkan
+- laporan bisa disimpan sebagai draft
+- ada review sebelum submit final
+- hasil laporan bisa dibuka kembali dengan detail yang rapi
+- ada export PDF
+- ada ringkasan WhatsApp
+- ada monitoring laporan
+- ada pembagian role user
+- ada kesiapan integrasi API di masa depan
+
+========================================================================
+20. CATATAN PENTING OPERASIONAL
+========================================================================
+
+- login menggunakan email atau username
+- user baru dari register akan menjadi Supervisor
+- laporan dapat difilter berdasarkan tanggal, user, dan status
+- PDF tersedia dari data laporan yang sudah tersimpan
+- ringkasan WhatsApp paling relevan setelah submit final
+- fitur kirim WhatsApp bergantung pada konfigurasi Fonnte
+- halaman API memerlukan token JWT
+- aplikasi memiliki tampilan dan perilaku yang dioptimalkan untuk mobile
+
+
+========================================================================
+21. KESIMPULAN
+========================================================================
+
+TRACE adalah aplikasi laporan harian lapangan yang fokus pada 3 hal:
+kemudahan input, kerapian data, dan kemudahan monitoring.
+
+Jika client ingin benar-benar paham, maka cukup kuasai:
+- tujuan aplikasi
+- role pengguna
+- flow dari login sampai monitoring
+- output utama seperti PDF dan WhatsApp summary
+- istilah teknis dasar
+
+Kalau sudah menguasai lima poin di atas, client biasanya sudah cukup
+siap untuk menjelaskan aplikasi ini baik dari sisi fungsi bisnis
+maupun dari sisi teknis dasar.
