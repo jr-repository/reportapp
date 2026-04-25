@@ -153,6 +153,7 @@ Project 1/
 ├── app/
 │   ├── Config/          # Konfigurasi aplikasi, routes, validation
 │   ├── Controllers/     # Controller halaman web dan API
+│   ├── Database/        # Migration dan seeder database
 │   ├── Filters/         # Filter auth dan role
 │   ├── Libraries/       # Library tambahan, termasuk notifikasi WhatsApp
 │   ├── Models/          # Model database
@@ -207,14 +208,47 @@ Lalu sesuaikan konfigurasi berikut:
 - `fonnte.token` jika fitur WhatsApp ingin digunakan
 - `fonnte.groupId` jika fitur WhatsApp ingin digunakan
 
-### 4. Import database
+### 4. Setup database
 
-Folder `db/` sudah menyediakan file SQL:
+Disarankan menggunakan migration + seeder agar struktur database selalu
+sesuai dengan schema aplikasi terbaru.
+
+#### Opsi A - Migration + Seeder
+
+Jalankan migration:
+
+```bash
+php spark migrate
+```
+
+Lalu isi master data awal:
+
+```bash
+php spark db:seed TraceMasterSeeder
+```
+
+Seeder tersebut akan mengisi data dasar berikut:
+
+- roles
+- worker categories
+- heavy equipment categories
+
+Catatan:
+Seeder ini tidak membuat akun user default. Akun `Supervisor` bisa dibuat
+melalui fitur register, sedangkan akun `Admin/Manager` sebaiknya dibuat
+secara manual atau melalui seeder terpisah sesuai kebutuhan deployment.
+
+#### Opsi B - Import SQL Manual
+
+Jika ingin menggunakan file SQL manual, folder `db/` tetap menyediakan
+snapshot database.
+
+File yang tersedia:
 
 - `db/bytecorner_db_schema.sql` untuk struktur database
 - `db/bytecorner_db_all_data.sql` untuk struktur + data
 
-Jika ingin langsung memakai data yang lebih lengkap, gunakan file:
+Jika ingin langsung memakai data yang lebih lengkap, gunakan:
 
 ```text
 db/bytecorner_db_all_data.sql
