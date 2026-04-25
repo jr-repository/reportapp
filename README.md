@@ -307,7 +307,7 @@ Alur penggunaan aplikasi secara umum:
 - file runtime seperti log, cache, session, dan output sementara berada di folder `writable/`
 - jika fitur WhatsApp dipakai, token Fonnte wajib diisi melalui `.env`
 
-## Saran Penggunaan untuk Orang Awam
+## Saran Penggunaan
 
 Jika Anda baru pertama kali membuka project ini, cukup pahami 4 hal berikut:
 
