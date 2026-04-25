@@ -1,311 +1,69 @@
-# TRACE
+# CodeIgniter 4 Application Starter
 
-**TRACE** adalah aplikasi pelaporan harian proyek berbasis web yang dibangun dengan **CodeIgniter 4**.
-Nama TRACE merupakan singkatan dari **Tracking Report & Activity Control Engine**.
+## What is CodeIgniter?
 
-Aplikasi ini dirancang untuk membantu tim lapangan dan manajemen dalam:
+CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
+More information can be found at the [official site](https://codeigniter.com).
 
-- mencatat laporan harian pekerjaan,
-- memonitor progres aktivitas proyek,
-- mengelola user berdasarkan peran,
-- meninjau laporan dalam format ringkas maupun PDF,
-- menyediakan endpoint API berbasis JWT untuk integrasi lanjutan.
+This repository holds a composer-installable app starter.
+It has been built from the
+[development repository](https://github.com/codeigniter4/CodeIgniter4).
 
-## Ringkasan Proyek
+More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
 
-TRACE menggunakan pendekatan role-based access sehingga setiap jenis pengguna mendapatkan fitur sesuai kebutuhan:
+You can read the [user guide](https://codeigniter.com/user_guide/)
+corresponding to the latest version of the framework.
 
-- **Admin**: mengelola user, memantau laporan, dan mengakses area administrasi.
-- **Manager**: melihat monitoring laporan dan halaman ringkasan/trend.
-- **Supervisor / PIC / Pelaksana**: melakukan self-register, mengisi laporan harian, upload foto profil, dan mengelola laporan pekerjaan.
+## Installation & updates
 
-## Fitur Utama
+`composer create-project codeigniter4/appstarter` then `composer update` whenever
+there is a new release of the framework.
 
-- Login dan logout berbasis session.
-- Self registration untuk user lapangan.
-- Manajemen hak akses berbasis role.
-- Pembuatan laporan harian proyek.
-- Review dan submit laporan.
-- Export laporan ke PDF.
-- Monitoring laporan untuk Admin dan Manager.
-- Manajemen user untuk Admin.
-- API token JWT untuk integrasi endpoint tertentu.
-- UI mobile-first / PWA-style.
+When updating, check the release notes to see if there are any changes you might need to apply
+to your `app` folder. The affected files can be copied or merged from
+`vendor/codeigniter4/framework/app`.
 
-## Teknologi yang Digunakan
+## Setup
 
-- PHP 8.2+
-- CodeIgniter 4
-- MySQL / MariaDB
-- Dompdf
-- Firebase JWT
-- HTML, CSS, JavaScript
+Copy `env` to `.env` and tailor for your app, specifically the baseURL
+and any database settings.
 
-## Struktur Direktori Penting
+## Important Change with index.php
 
-- `app/Controllers` : controller utama aplikasi.
-- `app/Views` : tampilan UI.
-- `app/Services` : service bisnis aplikasi, termasuk autentikasi.
-- `app/Filters` : filter autentikasi dan role access.
-- `app/Config` : konfigurasi aplikasi, routes, database, dan environment.
-- `db/` : file schema, dump database, dan seed data.
-- `public/` : document root aplikasi dan aset publik.
-- `writable/` : cache, session, log, dan file runtime lainnya.
+`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
+for better security and separation of components.
 
-## Kebutuhan Sistem
+This means that you should configure your web server to "point" to your project's *public* folder, and
+not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
+framework are exposed.
 
-Sebelum menjalankan project di lokal, pastikan environment Anda memiliki:
+**Please** read the user guide for a better explanation of how CI4 works!
 
-- PHP **8.2** atau lebih tinggi
-- Composer
-- MySQL atau MariaDB
-- Web server lokal atau gunakan `php spark serve`
+## Repository Management
 
-Ekstensi PHP yang disarankan aktif:
+We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
+We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
+FEATURE REQUESTS.
 
-- `intl`
-- `mbstring`
-- `json`
-- `mysqli` / `mysqlnd`
-- `curl`
+This repository is a "distribution" one, built by our release preparation script.
+Problems with it can be raised on our forum, or as issues in the main repository.
 
-## Cara Menjalankan Project di Lokal
+## Server Requirements
 
-### 1. Clone repository
+PHP version 8.2 or higher is required, with the following extensions installed:
 
-```bash
-git clone <url-repository>
-cd "Project 1"
-```
+- [intl](http://php.net/manual/en/intl.requirements.php)
+- [mbstring](http://php.net/manual/en/mbstring.installation.php)
 
-### 2. Install dependency
+> [!WARNING]
+> - The end of life date for PHP 7.4 was November 28, 2022.
+> - The end of life date for PHP 8.0 was November 26, 2023.
+> - The end of life date for PHP 8.1 was December 31, 2025.
+> - If you are still using below PHP 8.2, you should upgrade immediately.
+> - The end of life date for PHP 8.2 will be December 31, 2026.
 
-```bash
-composer install
-```
+Additionally, make sure that the following extensions are enabled in your PHP:
 
-### 3. Buat file environment
-
-Salin file `env` menjadi `.env`.
-
-```bash
-cp env .env
-```
-
-Lalu aktifkan konfigurasi yang dibutuhkan, minimal:
-
-```dotenv
-CI_ENVIRONMENT = development
-app.baseURL = 'http://localhost:8080/'
-
-database.default.hostname = localhost
-database.default.database = reportappdb
-database.default.username = root
-database.default.password =
-database.default.DBDriver = MySQLi
-database.default.port = 3306
-```
-
-Catatan:
-
-- Pastikan `app.baseURL` diakhiri dengan `/`.
-- Sesuaikan nama database dengan file SQL yang Anda import.
-
-## Setup Database Lokal
-
-Project ini menyediakan beberapa file database di folder `db/`.
-
-### Opsi database yang tersedia
-
-- `db/DatabaseSchema.sql`
-  Digunakan untuk setup database dasar yang lebih bersih. File ini sudah berisi:
-  - struktur tabel,
-  - role awal,
-  - kategori pekerja,
-  - kategori alat berat,
-  - beberapa user awal.
-
-- `db/u193610993_traceapp.sql`
-  Dump database yang lebih lengkap. Cocok jika Anda ingin langsung mendapatkan data contoh yang lebih mendekati kondisi pengembangan, termasuk histori laporan, audit log, dan data tambahan lain.
-
-- `db/dummy_reports_seed.sql`
-  Seed dummy laporan harian. Gunakan hanya jika data referensi dan user yang dibutuhkan sudah tersedia.
-
-- `db/update_profile_photo.sql`
-  Script SQL tambahan terkait pembaruan kolom foto profil.
-
-### Rekomendasi setup
-
-Untuk local development, paling aman gunakan:
-
-1. buat database baru,
-2. import `db/DatabaseSchema.sql`,
-3. jalankan aplikasi.
-
-Contoh:
-
-```sql
-CREATE DATABASE reportappdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Lalu import:
-
-```bash
-mysql -u root -p reportappdb < db/DatabaseSchema.sql
-```
-
-Jika Anda ingin langsung memakai data contoh yang lebih lengkap, gunakan dump penuh:
-
-```bash
-mysql -u root -p u193610993_traceapp < db/u193610993_traceapp.sql
-```
-
-Jika memakai dump penuh, sesuaikan `.env`:
-
-```dotenv
-database.default.database = u193610993_traceapp
-```
-
-## Menjalankan Aplikasi
-
-Setelah dependency dan database siap, jalankan:
-
-```bash
-php spark serve
-```
-
-Secara default aplikasi akan tersedia di:
-
-```text
-http://localhost:8080
-```
-
-## Akses Awal
-
-### Register user lapangan
-
-Halaman register tersedia di:
-
-```text
-/register
-```
-
-User yang mendaftar dari halaman ini otomatis akan dibuat sebagai role:
-
-- **Supervisor / PIC / Pelaksana**
-
-Catatan penting:
-
-- proses register membutuhkan data role `Supervisor` di database,
-- role tersebut sudah tersedia jika Anda mengimport `db/DatabaseSchema.sql` atau dump lengkap.
-
-### User contoh bawaan
-
-File `db/DatabaseSchema.sql` sudah menyertakan user awal berikut:
-
-- `admin`
-- `supervisor`
-- `manager`
-
-Namun password plaintext user bawaan tidak didokumentasikan di repository ini.
-
-Jika Anda ingin memakai user contoh tersebut, Anda bisa mengganti password secara manual:
-
-1. buat hash password baru:
-
-```bash
-php -r "echo password_hash('admin123', PASSWORD_DEFAULT), PHP_EOL;"
-```
-
-2. update ke database:
-
-```sql
-UPDATE Users SET password_hash = 'HASIL_HASH_BARU' WHERE username = 'admin';
-UPDATE Users SET password_hash = 'HASIL_HASH_BARU' WHERE username = 'manager';
-UPDATE Users SET password_hash = 'HASIL_HASH_BARU' WHERE username = 'supervisor';
-```
-
-Atau, untuk pengujian fitur user lapangan, Anda cukup membuat akun baru lewat halaman register.
-
-## Alur Fitur Utama
-
-### Area umum
-
-- `/login`
-- `/register`
-
-### Setelah login
-
-- `/` : dashboard utama
-- `/profile` : halaman profil
-- `/reports/create` : membuat laporan harian
-- `/reports/review/{id}` : review laporan
-- `/reports/detail/{id}` : detail laporan
-- `/reports/pdf/{id}` : export PDF laporan
-
-### Area Admin
-
-- `/admin/users`
-- `/admin/reports`
-
-### Area Manager
-
-- `/manager`
-
-### API
-
-- `POST /api/auth/token`
-- `POST /api/auth/refresh`
-- `GET /api/reports/today`
-- `GET /api/reports/detail/{id}`
-
-## Menjalankan Test
-
-Jika ingin menjalankan test:
-
-```bash
-composer test
-```
-
-## Catatan Penting untuk Development
-
-- Pastikan folder `writable/` dapat ditulis.
-- Jika ada fitur upload file/foto, pastikan folder upload juga memiliki permission yang sesuai.
-- Jika aset tidak tampil benar, cek kembali `app.baseURL`.
-- Jika route berjalan tetapi halaman kosong atau redirect aneh, periksa session dan konfigurasi database.
-- Jika register gagal dengan pesan role tidak ditemukan, berarti data referensi database belum terimport dengan benar.
-
-## Troubleshooting Singkat
-
-### 1. Halaman tidak bisa dibuka setelah `php spark serve`
-
-Periksa:
-
-- apakah `.env` sudah aktif,
-- apakah `app.baseURL` sesuai,
-- apakah port `8080` sedang dipakai aplikasi lain.
-
-### 2. Login gagal terus
-
-Periksa:
-
-- data user memang ada di tabel `Users`,
-- password hash valid,
-- user berstatus `Active`.
-
-### 3. Register berhasil tapi akses fitur tertentu tidak muncul
-
-Itu normal. User hasil self-register akan menjadi role **Supervisor**, bukan **Admin** atau **Manager**.
-
-### 4. Error database
-
-Periksa:
-
-- host, username, password, port, dan nama database di `.env`,
-- apakah file SQL sudah benar-benar terimport,
-- apakah database yang dipakai sama dengan yang tertulis di `.env`.
-
-## Penutup
-
-TRACE ditujukan sebagai aplikasi pelaporan harian proyek yang ringkas, mobile-friendly, dan terstruktur.
-Dokumentasi ini difokuskan agar project dapat dijalankan dengan cepat di lokal untuk kebutuhan development, testing, dan demonstrasi.
+- json (enabled by default - don't turn it off)
+- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
+- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
