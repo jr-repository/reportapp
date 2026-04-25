@@ -1,75 +1,122 @@
 # TRACE
 
-**TRACE** adalah aplikasi pelaporan harian proyek berbasis web yang dibangun dengan **CodeIgniter 4**.
-Nama TRACE merupakan singkatan dari **Tracking Report & Activity Control Engine**.
+**TRACE** adalah aplikasi laporan harian lapangan berbasis mobile web untuk membantu tim proyek mencatat aktivitas pekerjaan, progres, kondisi lapangan, dokumentasi foto, hingga monitoring laporan per user.
 
-Aplikasi ini dirancang untuk membantu tim lapangan dan manajemen dalam:
+Nama lengkap aplikasi ini adalah **Tracking Report & Activity Control Engine**.
 
-- mencatat laporan harian pekerjaan,
-- memonitor progres aktivitas proyek,
-- mengelola user berdasarkan peran,
-- meninjau laporan dalam format ringkas maupun PDF,
-- menyediakan endpoint API berbasis JWT untuk integrasi lanjutan.
+## Ringkasan Project
 
-## Ringkasan Proyek
+Project ini dibuat untuk mempermudah proses:
 
-TRACE menggunakan pendekatan role-based access sehingga setiap jenis pengguna mendapatkan fitur sesuai kebutuhan:
+- input laporan harian lapangan
+- penyimpanan draft laporan
+- review dan submit laporan final
+- monitoring laporan berdasarkan user, tanggal, dan status
+- rekap singkat untuk admin dan manager
+- export laporan ke PDF
+- integrasi pengiriman ringkasan laporan ke WhatsApp
 
-- **Admin**: mengelola user, memantau laporan, dan mengakses area administrasi.
-- **Manager**: melihat monitoring laporan dan halaman ringkasan/trend.
-- **Supervisor / PIC / Pelaksana**: melakukan self-register, mengisi laporan harian, upload foto profil, dan mengelola laporan pekerjaan.
+Secara umum, aplikasi ini cocok dipakai oleh tim operasional proyek yang membutuhkan pencatatan aktivitas harian secara cepat, rapi, dan terstruktur.
 
 ## Fitur Utama
 
-- Login dan logout berbasis session.
-- Self registration untuk user lapangan.
-- Manajemen hak akses berbasis role.
-- Pembuatan laporan harian proyek.
-- Review dan submit laporan.
-- Export laporan ke PDF.
-- Monitoring laporan untuk Admin dan Manager.
-- Manajemen user untuk Admin.
-- API token JWT untuk integrasi endpoint tertentu.
-- UI mobile-first / PWA-style.
+- Login dan register user
+- Dashboard home dengan menu cepat
+- Input laporan harian bertahap per section
+- Simpan draft laporan
+- Review checklist sebelum submit final
+- Detail laporan dan preview ringkasan WhatsApp
+- Export laporan ke PDF
+- Monitoring laporan untuk admin dan manager
+- Manajemen user oleh admin
+- Overview trend laporan untuk manager
+- API berbasis JWT untuk kebutuhan integrasi
 
-## Teknologi yang Digunakan
+## Pembagian Role
 
-- PHP 8.2+
-- CodeIgniter 4
-- MySQL / MariaDB
-- Dompdf
-- Firebase JWT
-- HTML, CSS, JavaScript
+### `Supervisor / PIC / Pelaksana`
 
-## Struktur Direktori Penting
+Role ini adalah pengguna lapangan yang paling sering menggunakan aplikasi.
 
-- `app/Controllers` : controller utama aplikasi.
-- `app/Views` : tampilan UI.
-- `app/Services` : service bisnis aplikasi, termasuk autentikasi.
-- `app/Filters` : filter autentikasi dan role access.
-- `app/Config` : konfigurasi aplikasi, routes, database, dan environment.
-- `db/` : file schema, dump database, dan seed data.
-- `public/` : document root aplikasi dan aset publik.
-- `writable/` : cache, session, log, dan file runtime lainnya.
+Tugas utamanya:
 
-## Kebutuhan Sistem
+- login ke aplikasi
+- membuat laporan harian
+- menyimpan draft
+- mengedit draft laporan
+- submit laporan final
+- melihat detail laporan
+- membuka PDF laporan
+- mengatur profil pribadi
 
-Sebelum menjalankan project di lokal, pastikan environment Anda memiliki:
+Catatan:
 
-- PHP **8.2** atau lebih tinggi
-- Composer
-- MySQL atau MariaDB
-- Web server lokal atau gunakan `php spark serve`
+- user yang melakukan register mandiri akan masuk ke role ini
 
-Ekstensi PHP yang disarankan aktif:
+### `Admin`
 
-- `intl`
-- `mbstring`
-- `json`
-- `mysqli` / `mysqlnd`
-- `curl`
+Role ini digunakan untuk pengelolaan sistem dan monitoring operasional.
 
-## Cara Menjalankan Project di Lokal
+Tugas utamanya:
+
+- mengelola data user
+- menambah user baru
+- mengubah data user
+- mengaktifkan / menonaktifkan user
+- memonitor semua laporan
+- memfilter laporan berdasarkan tanggal, user, dan status
+
+### `Manager`
+
+Role ini digunakan untuk melihat gambaran umum progres dan monitoring laporan.
+
+Tugas utamanya:
+
+- melihat monitoring laporan
+- melihat overview tren laporan
+- melihat ringkasan data cuaca dan progres
+- melihat laporan terbaru
+
+## Stack / Teknologi
+
+Project ini menggunakan stack berikut:
+
+- `PHP 8.2+`
+- `CodeIgniter 4`
+- `MySQL / MariaDB`
+- `HTML, CSS, JavaScript`
+- `Dompdf` untuk generate PDF
+- `firebase/php-jwt` untuk API token JWT
+- `Fonnte API` untuk integrasi WhatsApp
+
+## Struktur Folder
+
+Berikut struktur utama project:
+
+```text
+Project 1/
+├── app/
+│   ├── Config/          # Konfigurasi aplikasi, routes, validation
+│   ├── Controllers/     # Controller halaman web dan API
+│   ├── Filters/         # Filter auth dan role
+│   ├── Libraries/       # Library tambahan, termasuk notifikasi WhatsApp
+│   ├── Models/          # Model database
+│   ├── Services/        # Business logic aplikasi
+│   └── Views/           # Tampilan halaman
+├── db/                  # File database schema dan data
+├── public/
+│   ├── Assets/          # CSS, JS, image, vendor assets
+│   └── Uploads/         # File upload user dan laporan
+├── tests/               # Folder test
+├── writable/            # Cache, logs, session, output runtime
+├── .env                 # Konfigurasi environment lokal
+├── composer.json        # Dependency PHP
+└── README.md
+```
+
+## Setup Project di Local
+
+Ikuti langkah berikut untuk menjalankan project ini di lokal.
 
 ### 1. Clone repository
 
@@ -84,228 +131,135 @@ cd "Project 1"
 composer install
 ```
 
-### 3. Buat file environment
+### 3. Siapkan file environment
 
-Salin file `env` menjadi `.env`.
+Pastikan file `.env` tersedia. Jika belum ada, copy dari file `env`.
 
 ```bash
 cp env .env
 ```
 
-Lalu aktifkan konfigurasi yang dibutuhkan, minimal:
+Lalu sesuaikan konfigurasi berikut:
 
-```dotenv
-CI_ENVIRONMENT = development
-app.baseURL = 'http://localhost:8080/'
+- `CI_ENVIRONMENT`
+- `app.baseURL` jika diperlukan
+- `database.default.hostname`
+- `database.default.database`
+- `database.default.username`
+- `database.default.password`
+- `database.default.port`
+- `fonnte.token` jika fitur WhatsApp ingin digunakan
+- `fonnte.groupId` jika fitur WhatsApp ingin digunakan
 
-database.default.hostname = localhost
-database.default.database = reportappdb
-database.default.username = root
-database.default.password =
-database.default.DBDriver = MySQLi
-database.default.port = 3306
+### 4. Import database
+
+Folder `db/` sudah menyediakan file SQL:
+
+- `db/bytecorner_db_schema.sql` untuk struktur database
+- `db/bytecorner_db_all_data.sql` untuk struktur + data
+
+Jika ingin langsung memakai data yang lebih lengkap, gunakan file:
+
+```text
+db/bytecorner_db_all_data.sql
 ```
 
-Catatan:
+Jika hanya ingin struktur database saja, gunakan:
 
-- Pastikan `app.baseURL` diakhiri dengan `/`.
-- Sesuaikan nama database dengan file SQL yang Anda import.
-
-## Setup Database Lokal
-
-Project ini menyediakan beberapa file database di folder `db/`.
-
-### Opsi database yang tersedia
-
-- `db/DatabaseSchema.sql`
-  Digunakan untuk setup database dasar yang lebih bersih. File ini sudah berisi:
-  - struktur tabel,
-  - role awal,
-  - kategori pekerja,
-  - kategori alat berat,
-  - beberapa user awal.
-
-- `db/u193610993_traceapp.sql`
-  Dump database yang lebih lengkap. Cocok jika Anda ingin langsung mendapatkan data contoh yang lebih mendekati kondisi pengembangan, termasuk histori laporan, audit log, dan data tambahan lain.
-
-- `db/dummy_reports_seed.sql`
-  Seed dummy laporan harian. Gunakan hanya jika data referensi dan user yang dibutuhkan sudah tersedia.
-
-- `db/update_profile_photo.sql`
-  Script SQL tambahan terkait pembaruan kolom foto profil.
-
-### Rekomendasi setup
-
-Untuk local development, paling aman gunakan:
-
-1. buat database baru,
-2. import `db/DatabaseSchema.sql`,
-3. jalankan aplikasi.
-
-Contoh:
-
-```sql
-CREATE DATABASE reportappdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```text
+db/bytecorner_db_schema.sql
 ```
 
-Lalu import:
-
-```bash
-mysql -u root -p reportappdb < db/DatabaseSchema.sql
-```
-
-Jika Anda ingin langsung memakai data contoh yang lebih lengkap, gunakan dump penuh:
-
-```bash
-mysql -u root -p u193610993_traceapp < db/u193610993_traceapp.sql
-```
-
-Jika memakai dump penuh, sesuaikan `.env`:
-
-```dotenv
-database.default.database = u193610993_traceapp
-```
-
-## Menjalankan Aplikasi
-
-Setelah dependency dan database siap, jalankan:
+### 5. Jalankan aplikasi
 
 ```bash
 php spark serve
 ```
 
-Secara default aplikasi akan tersedia di:
+Setelah itu buka browser ke:
 
 ```text
 http://localhost:8080
 ```
 
-## Akses Awal
+## Kebutuhan Minimum
 
-### Register user lapangan
+Sebelum menjalankan project, pastikan local environment memiliki:
 
-Halaman register tersedia di:
+- PHP 8.2 atau lebih baru
+- Composer
+- MySQL atau MariaDB
+- extension PHP umum untuk CodeIgniter 4 seperti `intl`, `mbstring`, `json`, `curl`, `openssl`, dan `fileinfo`
 
-```text
-/register
-```
+## Cara Kerja Singkat
 
-User yang mendaftar dari halaman ini otomatis akan dibuat sebagai role:
+Alur penggunaan aplikasi secara umum:
 
-- **Supervisor / PIC / Pelaksana**
+1. User login ke aplikasi
+2. Supervisor mengisi laporan harian per step
+3. Laporan bisa disimpan sebagai draft terlebih dahulu
+4. Laporan direview sebelum submit final
+5. Setelah submit, laporan bisa dilihat detailnya, dibuat PDF, dan dikirim ke WhatsApp jika fitur aktif
+6. Admin dan manager dapat memantau laporan dari halaman monitoring
 
-Catatan penting:
+## Modul Utama
 
-- proses register membutuhkan data role `Supervisor` di database,
-- role tersebut sudah tersedia jika Anda mengimport `db/DatabaseSchema.sql` atau dump lengkap.
+### `Authentication`
 
-### User contoh bawaan
+- login
+- register
+- logout
+- proteksi halaman berdasarkan auth dan role
 
-File `db/DatabaseSchema.sql` sudah menyertakan user awal berikut:
+### `Dashboard`
 
-- `admin`
-- `supervisor`
-- `manager`
+- home ringkas
+- quick menu
+- status pengisian laporan
+- leaderboard pengisian
 
-Namun password plaintext user bawaan tidak didokumentasikan di repository ini.
+### `Reports`
 
-Jika Anda ingin memakai user contoh tersebut, Anda bisa mengganti password secara manual:
+- create report
+- edit draft
+- save draft
+- review report
+- submit final
+- detail report
+- export PDF
 
-1. buat hash password baru:
+### `Admin Panel`
 
-```bash
-php -r "echo password_hash('admin123', PASSWORD_DEFAULT), PHP_EOL;"
-```
+- user management
+- report monitoring
 
-2. update ke database:
+### `Manager View`
 
-```sql
-UPDATE Users SET password_hash = 'HASIL_HASH_BARU' WHERE username = 'admin';
-UPDATE Users SET password_hash = 'HASIL_HASH_BARU' WHERE username = 'manager';
-UPDATE Users SET password_hash = 'HASIL_HASH_BARU' WHERE username = 'supervisor';
-```
+- overview trend laporan
+- ringkasan data cuaca
+- daftar laporan terbaru
 
-Atau, untuk pengujian fitur user lapangan, Anda cukup membuat akun baru lewat halaman register.
+### `API`
 
-## Alur Fitur Utama
+- auth token JWT
+- endpoint laporan
 
-### Area umum
+## Catatan Penting
 
-- `/login`
-- `/register`
+- aplikasi ini dirancang dengan orientasi tampilan mobile
+- file upload laporan disimpan di folder `public/Uploads/`
+- file runtime seperti log, cache, session, dan output sementara berada di folder `writable/`
+- jika fitur WhatsApp dipakai, token Fonnte wajib diisi melalui `.env`
 
-### Setelah login
+## Saran Penggunaan untuk Orang Awam
 
-- `/` : dashboard utama
-- `/profile` : halaman profil
-- `/reports/create` : membuat laporan harian
-- `/reports/review/{id}` : review laporan
-- `/reports/detail/{id}` : detail laporan
-- `/reports/pdf/{id}` : export PDF laporan
+Jika Anda baru pertama kali membuka project ini, cukup pahami 4 hal berikut:
 
-### Area Admin
-
-- `/admin/users`
-- `/admin/reports`
-
-### Area Manager
-
-- `/manager`
-
-### API
-
-- `POST /api/auth/token`
-- `POST /api/auth/refresh`
-- `GET /api/reports/today`
-- `GET /api/reports/detail/{id}`
-
-## Menjalankan Test
-
-Jika ingin menjalankan test:
-
-```bash
-composer test
-```
-
-## Catatan Penting untuk Development
-
-- Pastikan folder `writable/` dapat ditulis.
-- Jika ada fitur upload file/foto, pastikan folder upload juga memiliki permission yang sesuai.
-- Jika aset tidak tampil benar, cek kembali `app.baseURL`.
-- Jika route berjalan tetapi halaman kosong atau redirect aneh, periksa session dan konfigurasi database.
-- Jika register gagal dengan pesan role tidak ditemukan, berarti data referensi database belum terimport dengan benar.
-
-## Troubleshooting Singkat
-
-### 1. Halaman tidak bisa dibuka setelah `php spark serve`
-
-Periksa:
-
-- apakah `.env` sudah aktif,
-- apakah `app.baseURL` sesuai,
-- apakah port `8080` sedang dipakai aplikasi lain.
-
-### 2. Login gagal terus
-
-Periksa:
-
-- data user memang ada di tabel `Users`,
-- password hash valid,
-- user berstatus `Active`.
-
-### 3. Register berhasil tapi akses fitur tertentu tidak muncul
-
-Itu normal. User hasil self-register akan menjadi role **Supervisor**, bukan **Admin** atau **Manager**.
-
-### 4. Error database
-
-Periksa:
-
-- host, username, password, port, dan nama database di `.env`,
-- apakah file SQL sudah benar-benar terimport,
-- apakah database yang dipakai sama dengan yang tertulis di `.env`.
+1. `Supervisor` bertugas mengisi laporan
+2. `Admin` bertugas mengelola user dan memonitor laporan
+3. `Manager` bertugas melihat ringkasan dan tren
+4. untuk menjalankan project, fokus utama hanya pada `composer install`, konfigurasi `.env`, import database, lalu `php spark serve`
 
 ## Penutup
 
-TRACE ditujukan sebagai aplikasi pelaporan harian proyek yang ringkas, mobile-friendly, dan terstruktur.
-Dokumentasi ini difokuskan agar project dapat dijalankan dengan cepat di lokal untuk kebutuhan development, testing, dan demonstrasi.
+TRACE dibuat untuk membantu proses pelaporan harian lapangan agar lebih cepat, konsisten, dan mudah dimonitor. Dokumentasi ini ditujukan agar developer maupun user non-teknis bisa memahami fungsi project ini tanpa harus membaca keseluruhan source code terlebih dahulu.
