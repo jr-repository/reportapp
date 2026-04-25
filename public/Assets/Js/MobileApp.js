@@ -324,6 +324,43 @@
         });
     };
 
+    const initAutoSendWaToggle = () => {
+        const toggles = Array.from(document.querySelectorAll('[data-auto-wa-toggle]'));
+        const hiddenInputs = Array.from(document.querySelectorAll('[data-auto-wa-input]'));
+
+        if (toggles.length === 0 && hiddenInputs.length === 0) {
+            return;
+        }
+
+        const storageKey = 'trace-auto-send-wa';
+
+        const sync = (enabled) => {
+            toggles.forEach((toggle) => {
+                if (toggle instanceof HTMLInputElement) {
+                    toggle.checked = enabled;
+                }
+            });
+
+            hiddenInputs.forEach((input) => {
+                if (input instanceof HTMLInputElement) {
+                    input.value = enabled ? '1' : '0';
+                }
+            });
+
+            window.localStorage.setItem(storageKey, enabled ? '1' : '0');
+        };
+
+        const initialEnabled = window.localStorage.getItem(storageKey) === '1';
+
+        toggles.forEach((toggle) => {
+            toggle.addEventListener('change', () => {
+                sync(toggle instanceof HTMLInputElement ? toggle.checked : false);
+            });
+        });
+
+        sync(initialEnabled);
+    };
+
     const initReportWizard = () => {
         const form = document.getElementById('ReportWizardForm');
         if (!form) {
@@ -333,11 +370,178 @@
         const steps = Array.from(form.querySelectorAll('.WizardStep'));
         const chips = Array.from(form.querySelectorAll('.WizardChip'));
         const currentStepInput = document.getElementById('CurrentStepInput');
+        const draftPrompt = document.getElementById('ReportDraftPrompt');
+        const saveDraftButton = draftPrompt?.querySelector('[data-draft-save-exit]');
+        const stayButton = draftPrompt?.querySelector('[data-draft-stay]');
+        const draftKey = form.getAttribute('data-draft-key') || 'trace-report-draft:new';
+        const shell = form.closest('.MobileShell');
         let currentStep = Number(form.dataset.step || currentStepInput?.value || 1);
-
         const totalSteps = steps.length;
+        let allowExit = false;
+        let isSubmitting = false;
+        let pendingExitAction = null;
+        let autoSaveTimer = 0;
+        let allowHistoryBack = false;
+        const trackedHiddenFields = new Set(['reportId', 'currentStep']);
+        const baselineSnapshot = JSON.stringify(collectFormState());
 
-        const syncStep = () => {
+        function collectFormState() {
+            const snapshot = {};
+            const elements = Array.from(form.elements);
+
+            elements.forEach((field) => {
+                if (!field.name || field.disabled) {
+                    return;
+                }
+
+                if (
+                    !(
+                        field instanceof HTMLInputElement
+                        || field instanceof HTMLTextAreaElement
+                        || field instanceof HTMLSelectElement
+                    )
+                ) {
+                    return;
+                }
+
+                if (['file', 'submit', 'button', 'reset'].includes(field.type)) {
+                    return;
+                }
+
+                if (field.type === 'hidden' && !trackedHiddenFields.has(field.name)) {
+                    return;
+                }
+
+                if (field.type === 'radio') {
+                    if (field.checked) {
+                        snapshot[field.name] = field.value;
+                    }
+
+                    return;
+                }
+
+                if (field.type === 'checkbox') {
+                    snapshot[field.name] = field.checked ? field.value || '1' : '';
+                    return;
+                }
+
+                snapshot[field.name] = field.value;
+            });
+
+            return snapshot;
+        }
+
+        const saveDraftSnapshot = () => {
+            try {
+                const snapshot = collectFormState();
+                snapshot.__currentStep = String(currentStep);
+                window.localStorage.setItem(
+                    draftKey,
+                    JSON.stringify({
+                        savedAt: Date.now(),
+                        data: snapshot,
+                    }),
+                );
+            } catch (error) {
+                console.warn('Gagal menyimpan auto draft lokal', error);
+            }
+        };
+
+        const restoreDraftSnapshot = () => {
+            const raw = window.localStorage.getItem(draftKey);
+
+            if (!raw) {
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(raw);
+                const snapshot = parsed?.data ?? parsed;
+
+                Object.entries(snapshot).forEach(([name, value]) => {
+                    if (name === '__currentStep') {
+                        currentStep = Number(value || currentStep);
+                        return;
+                    }
+
+                    const fields = Array.from(form.elements).filter(
+                        (field) => 'name' in field && field.name === name,
+                    );
+
+                    fields.forEach((field) => {
+                        if (
+                            !(
+                                field instanceof HTMLInputElement
+                                || field instanceof HTMLTextAreaElement
+                                || field instanceof HTMLSelectElement
+                            )
+                        ) {
+                            return;
+                        }
+
+                        if (field.type === 'radio') {
+                            field.checked = field.value === String(value);
+                            return;
+                        }
+
+                        if (field.type === 'checkbox') {
+                            field.checked = value === field.value || value === '1' || value === true;
+                            return;
+                        }
+
+                        if (field.type !== 'file') {
+                            field.value = String(value ?? '');
+                        }
+                    });
+                });
+            } catch (error) {
+                console.warn('Gagal memulihkan auto draft lokal', error);
+            }
+        };
+
+        const hasPendingFiles = () =>
+            Array.from(form.querySelectorAll('input[type="file"]')).some((input) => (input.files?.length ?? 0) > 0);
+
+        const shouldPromptBeforeExit = () => {
+            if (allowExit || isSubmitting) {
+                return false;
+            }
+
+            return JSON.stringify(collectFormState()) !== baselineSnapshot || hasPendingFiles();
+        };
+
+        const scrollToTop = () => {
+            if (shell instanceof HTMLElement) {
+                shell.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const resolveHashTarget = () => {
+            const hash = window.location.hash;
+            if (!hash || hash === '#') {
+                return null;
+            }
+
+            const target = form.querySelector(hash);
+            if (!(target instanceof HTMLElement)) {
+                return null;
+            }
+
+            const step = target.closest('.WizardStep');
+            if (!(step instanceof HTMLElement)) {
+                return null;
+            }
+
+            return {
+                target,
+                stepNumber: Number(step.getAttribute('data-wizard-step') || currentStep),
+            };
+        };
+
+        const syncStep = (focusTarget = null) => {
             currentStep = Math.max(1, Math.min(totalSteps, currentStep));
 
             steps.forEach((step) => {
@@ -354,8 +558,79 @@
                 currentStepInput.value = String(currentStep);
             }
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (focusTarget instanceof HTMLElement) {
+                window.setTimeout(() => {
+                    focusTarget.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                        inline: 'nearest',
+                    });
+                }, 80);
+                return;
+            }
+
+            scrollToTop();
         };
+
+        const closeDraftPrompt = () => {
+            if (!draftPrompt) {
+                return;
+            }
+
+            draftPrompt.hidden = true;
+            document.body.classList.remove('ReportDraftPromptOpen');
+        };
+
+        const openDraftPrompt = (onConfirm) => {
+            if (!draftPrompt) {
+                return;
+            }
+
+            pendingExitAction = onConfirm;
+            draftPrompt.hidden = false;
+            document.body.classList.add('ReportDraftPromptOpen');
+        };
+
+        const scheduleAutoSave = () => {
+            window.clearTimeout(autoSaveTimer);
+            autoSaveTimer = window.setTimeout(() => {
+                saveDraftSnapshot();
+            }, 500);
+        };
+
+        restoreDraftSnapshot();
+
+        const initialHashTarget = resolveHashTarget();
+        if (initialHashTarget !== null) {
+            currentStep = initialHashTarget.stepNumber;
+        }
+
+        if (saveDraftButton) {
+            saveDraftButton.addEventListener('click', () => {
+                saveDraftSnapshot();
+                closeDraftPrompt();
+                const nextAction = pendingExitAction;
+                pendingExitAction = null;
+                allowExit = true;
+                if (typeof nextAction === 'function') {
+                    nextAction();
+                }
+            });
+        }
+
+        if (stayButton) {
+            stayButton.addEventListener('click', () => {
+                pendingExitAction = null;
+                closeDraftPrompt();
+            });
+        }
+
+        draftPrompt?.addEventListener('click', (event) => {
+            if (event.target === draftPrompt) {
+                pendingExitAction = null;
+                closeDraftPrompt();
+            }
+        });
 
         form.querySelectorAll('[data-wizard-next]').forEach((button) => {
             button.addEventListener('click', () => {
@@ -378,7 +653,102 @@
             });
         });
 
-        syncStep();
+        form.addEventListener('input', scheduleAutoSave);
+        form.addEventListener('change', scheduleAutoSave);
+        form.addEventListener('submit', () => {
+            isSubmitting = true;
+            allowExit = true;
+            window.clearTimeout(autoSaveTimer);
+            window.localStorage.removeItem(draftKey);
+        });
+
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!(target instanceof Element)) {
+                return;
+            }
+
+            const anchor = target.closest('a[href]');
+            if (!(anchor instanceof HTMLAnchorElement)) {
+                return;
+            }
+
+            if (
+                event.defaultPrevented
+                || event.metaKey
+                || event.ctrlKey
+                || event.shiftKey
+                || event.altKey
+                || anchor.target === '_blank'
+                || anchor.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const href = anchor.getAttribute('href') || '';
+            if (href === '' || href.startsWith('#')) {
+                return;
+            }
+
+            const nextUrl = new URL(anchor.href, window.location.href);
+            if (nextUrl.href === window.location.href || !shouldPromptBeforeExit()) {
+                return;
+            }
+
+            event.preventDefault();
+            openDraftPrompt(() => {
+                window.location.href = nextUrl.href;
+            });
+        });
+
+        window.addEventListener('beforeunload', (event) => {
+            if (!shouldPromptBeforeExit()) {
+                return;
+            }
+
+            window.clearTimeout(autoSaveTimer);
+            saveDraftSnapshot();
+            event.preventDefault();
+            event.returnValue = '';
+        });
+
+        window.history.replaceState(
+            Object.assign({}, window.history.state || {}, { traceDraftBase: true }),
+            '',
+            window.location.href,
+        );
+        window.history.pushState({ traceDraftGuard: true }, '', window.location.href);
+
+        window.addEventListener('popstate', () => {
+            if (allowHistoryBack || allowExit) {
+                allowHistoryBack = false;
+                return;
+            }
+
+            if (!shouldPromptBeforeExit()) {
+                allowHistoryBack = true;
+                window.history.back();
+                return;
+            }
+
+            window.history.pushState({ traceDraftGuard: true }, '', window.location.href);
+            openDraftPrompt(() => {
+                allowHistoryBack = true;
+                window.history.back();
+            });
+        });
+
+        window.addEventListener('hashchange', () => {
+            const hashTarget = resolveHashTarget();
+            if (hashTarget === null) {
+                return;
+            }
+
+            currentStep = hashTarget.stepNumber;
+            syncStep(hashTarget.target);
+        });
+
+        syncStep(initialHashTarget?.target ?? null);
     };
 
     const initViewportAssist = () => {
@@ -440,6 +810,7 @@
         initBannerCarousel();
         initQuickMenuToggle();
         initStatusToggle();
+        initAutoSendWaToggle();
         initReportWizard();
         initViewportAssist();
     });

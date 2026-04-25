@@ -85,13 +85,21 @@ class DailyReportController extends BaseController
 
     public function submit(int $reportId)
     {
-        $result = $this->dailyReportService->submit($reportId, $this->authService->currentUser());
+        $autoSendWa = $this->request->getPost('autoSendWa') === '1';
+        $result = $this->dailyReportService->submit($reportId, $this->authService->currentUser(), $autoSendWa);
 
         if (! $result['success']) {
             return redirect()->back()->with('error', $result['message']);
         }
 
-        return redirect()->to(base_url('reports/detail/' . $reportId))->with('success', 'Laporan final berhasil dikirim.');
+        $message = 'Laporan final berhasil dikirim.';
+        if ($autoSendWa) {
+            $message = $result['waSent']
+                ? 'Laporan final berhasil dikirim dan otomatis terkirim ke WhatsApp.'
+                : 'Laporan final berhasil dikirim, tetapi pengiriman WhatsApp gagal.';
+        }
+
+        return redirect()->to(base_url('reports/detail/' . $reportId))->with('success', $message);
     }
 
     public function detail(int $reportId)

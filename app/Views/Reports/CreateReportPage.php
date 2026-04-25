@@ -14,7 +14,12 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
     'subtitle' => 'Satu form lengkap untuk seluruh aktivitas pekerjaan harian lapangan.',
 ]) ?>
 
-<form method="post" action="<?= base_url('reports/save-draft') ?>" enctype="multipart/form-data" class="StackForm" id="ReportWizardForm" data-step="<?= esc((string) max(1, min(5, $currentStep))) ?>">
+<?= view('Components/AutoSendWAToggle', [
+    'toggleId' => 'CreateAutoSendWaToggle',
+    'hint'     => 'Preferensi ini dipakai saat Anda submit final laporan dari halaman review/detail.',
+]) ?>
+
+<form method="post" action="<?= base_url('reports/save-draft') ?>" enctype="multipart/form-data" class="StackForm" id="ReportWizardForm" data-step="<?= esc((string) max(1, min(5, $currentStep))) ?>" data-draft-key="<?= esc('trace-report-draft:' . ($currentUser['id'] ?? 'guest') . ':' . ($formData['reportId'] ?? 'new')) ?>">
     <?= csrf_field() ?>
     <input type="hidden" name="reportId" value="<?= esc((string) ($formData['reportId'] ?? '')) ?>">
     <input type="hidden" name="currentStep" id="CurrentStepInput" value="<?= esc((string) max(1, min(5, $currentStep))) ?>">
@@ -253,4 +258,15 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </div>
     </section>
 </form>
+
+<div class="ReportDraftPrompt" id="ReportDraftPrompt" hidden>
+    <div class="ReportDraftDialog">
+        <strong>Simpan draft?</strong>
+        <p>Data yang sudah Anda ketik akan disimpan sebagai draft di perangkat ini sebelum keluar dari halaman.</p>
+        <div class="ReportDraftActions">
+            <button type="button" class="PrimaryButton" data-draft-save-exit>Simpan Draft</button>
+            <button type="button" class="GhostButton" data-draft-stay>Lanjut</button>
+        </div>
+    </div>
+</div>
 <?= $this->endSection() ?>

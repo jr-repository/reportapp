@@ -10,6 +10,12 @@
     'actionIcon' => 'pdf',
 ]) ?>
 
+<?php if ($bundle['report']['status'] !== 'Submitted') : ?>
+    <?= view('Components/AutoSendWAToggle', [
+        'toggleId' => 'DetailAutoSendWaToggle',
+    ]) ?>
+<?php endif; ?>
+
 <section class="SuccessCard">
     <div class="SuccessIcon">✓</div>
     <strong><?= esc($bundle['report']['status']) === 'Submitted' ? 'Laporan berhasil dikirim' : 'Draft tersimpan' ?></strong>
@@ -112,6 +118,7 @@
         <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton isIconOnly" aria-label="Edit draft laporan" title="Edit draft laporan"><?= trace_icon('edit') ?></a>
         <form method="post" action="<?= base_url('reports/submit/' . $bundle['report']['id']) ?>">
             <?= csrf_field() ?>
+            <input type="hidden" name="autoSendWa" value="0" data-auto-wa-input>
             <button type="submit" class="PrimaryButton">Submit Final</button>
         </form>
     </div>

@@ -1961,6 +1961,107 @@ select {
     color: var(--TextStrong);
 }
 
+.ReportToggleCard {
+    padding: 12px 14px;
+}
+
+.ReportToggleField {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ReportToggleField strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.84rem;
+}
+
+.ReportSwitch {
+    position: relative;
+    flex: 0 0 auto;
+    width: 54px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.ReportSwitchInput {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.ReportSwitchTrack {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgba(23, 52, 95, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(23, 52, 95, 0.12);
+    transition: background 0.2s ease;
+}
+
+.ReportSwitchTrack::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(12, 23, 43, 0.16);
+    transition: transform 0.2s ease;
+}
+
+.ReportSwitchInput:checked + .ReportSwitchTrack {
+    background: linear-gradient(135deg, var(--BrandSecondary), var(--BrandPrimary));
+}
+
+.ReportSwitchInput:checked + .ReportSwitchTrack::after {
+    transform: translateX(22px);
+}
+
+.ReportDraftPrompt {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(12, 23, 43, 0.44);
+    backdrop-filter: blur(6px);
+}
+
+.ReportDraftPrompt[hidden] {
+    display: none !important;
+}
+
+.ReportDraftDialog {
+    width: min(100%, 360px);
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 22px 44px rgba(12, 23, 43, 0.22);
+}
+
+.ReportDraftDialog strong {
+    display: block;
+    font-size: 0.92rem;
+}
+
+.ReportDraftDialog p {
+    margin-top: 8px;
+}
+
+.ReportDraftActions {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
 .UserCard {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;

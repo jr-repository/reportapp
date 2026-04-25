@@ -10,6 +10,10 @@
     'actionIcon' => 'edit',
 ]) ?>
 
+<?= view('Components/AutoSendWAToggle', [
+    'toggleId' => 'ReviewAutoSendWaToggle',
+]) ?>
+
 <section class="MetricCard isAccent">
     <span class="MetricLabel">Progress Checklist</span>
     <strong><?= esc((string) $summary['doneCount']) ?>/<?= esc((string) $summary['totalCount']) ?> lengkap</strong>
@@ -54,6 +58,7 @@
 
 <form method="post" action="<?= base_url('reports/submit/' . $bundle['report']['id']) ?>">
     <?= csrf_field() ?>
+    <input type="hidden" name="autoSendWa" value="0" data-auto-wa-input>
     <div class="StickyActionBar">
         <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton isIconOnly" aria-label="Kembali ke edit draft" title="Kembali ke edit draft"><?= trace_icon('back') ?></a>
         <button type="submit" class="PrimaryButton">Submit Final</button>

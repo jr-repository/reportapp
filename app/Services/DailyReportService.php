@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Libraries\Notification;
 use App\Models\DailyReportModel;
 use App\Models\HeavyEquipmentCategoryModel;
 use App\Models\ReportHeavyEquipmentUsageModel;
@@ -25,6 +26,7 @@ class DailyReportService
         private readonly UserModel $userModel = new UserModel(),
         private readonly ReportSummaryService $reportSummaryService = new ReportSummaryService(),
         private readonly AuthService $authService = new AuthService(),
+        private readonly Notification $notification = new Notification(),
     ) {
     }
 
@@ -235,7 +237,7 @@ class DailyReportService
         return ['success' => true, 'reportId' => $reportId];
     }
 
-    public function submit(int $reportId, array $actor): array
+    public function submit(int $reportId, array $actor, bool $autoSendWa = false): array
     {
         $bundle = $this->getReportBundle($reportId);
 
@@ -247,6 +249,7 @@ class DailyReportService
             return ['success' => false, 'message' => 'Anda tidak memiliki akses untuk submit laporan ini.'];
         }
 
+        $bundle['report']['status'] = 'Submitted';
         $summary = $this->reportSummaryService->build($bundle);
 
         $this->dailyReportModel->update($reportId, [
@@ -255,9 +258,19 @@ class DailyReportService
             'whatsapp_summary' => $summary,
         ]);
 
+        $waSent = false;
+        if ($autoSendWa) {
+            $waSent = $this->notification->sendWhatsapp((string) env('fonnte.groupId'), $summary);
+        }
+
         $this->authService->writeAudit((int) $actor['id'], 'SubmitReport', 'DailyReports', $reportId);
 
-        return ['success' => true, 'summary' => $summary];
+        return [
+            'success'     => true,
+            'summary'     => $summary,
+            'waRequested' => $autoSendWa,
+            'waSent'      => $waSent,
+        ];
     }
 
     public function getReportBundle(int $reportId): ?array
