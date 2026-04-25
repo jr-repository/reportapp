@@ -124,3 +124,10 @@ _modules/*
 
 /results/
 /phpunit*.xml
+
+#-------------------------
+# Local Project Notes / Docs
+#-------------------------
+requrement.pdf
+deploy.txt
+Notes.txt
