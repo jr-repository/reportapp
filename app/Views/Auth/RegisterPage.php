@@ -139,18 +139,18 @@
         border-top-right-radius: 42% 100%;
     }
 
-    .RegisterInlineWave::before {
-        content: "";
-        position: absolute;
-        top: -7px;
-        left: 26%;
-        width: 34%;
-        height: 18px;
-        border-bottom-left-radius: 999px;
-        border-bottom-right-radius: 999px;
-        background: linear-gradient(135deg, #4e61ff 0%, var(--BrandPrimary) 100%);
-        transform: rotate(-2deg);
-    }
+    /*.RegisterInlineWave::before {*/
+    /*    content: "";*/
+    /*    position: absolute;*/
+    /*    top: -7px;*/
+    /*    left: 26%;*/
+    /*    width: 34%;*/
+    /*    height: 18px;*/
+    /*    border-bottom-left-radius: 999px;*/
+    /*    border-bottom-right-radius: 999px;*/
+    /*    background: linear-gradient(135deg, #4e61ff 0%, var(--BrandPrimary) 100%);*/
+    /*    transform: rotate(-2deg);*/
+    /*}*/
 
     .RegisterInlinePanel {
         margin-top: -18px;
