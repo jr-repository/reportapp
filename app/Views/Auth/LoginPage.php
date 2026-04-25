@@ -130,18 +130,18 @@
         border-top-right-radius: 42% 100%;
     }
 
-    /*.LoginInlineWave::before {*/
-    /*    content: "";*/
-    /*    position: absolute;*/
-    /*    top: -7px;*/
-    /*    left: 26%;*/
-    /*    width: 34%;*/
-    /*    height: 18px;*/
-    /*    border-bottom-left-radius: 999px;*/
-    /*    border-bottom-right-radius: 999px;*/
-    /*    background: linear-gradient(135deg, #4e61ff 0%, var(--BrandPrimary) 100%);*/
-    /*    transform: rotate(-2deg);*/
-    /*}*/
+    .LoginInlineWave::before {
+        content: "";
+        position: absolute;
+        top: -7px;
+        left: 26%;
+        width: 34%;
+        height: 18px;
+        border-bottom-left-radius: 999px;
+        border-bottom-right-radius: 999px;
+        background: linear-gradient(135deg, #4e61ff 0%, var(--BrandPrimary) 100%);
+        transform: rotate(-2deg);
+    }
 
     .LoginInlinePanel {
         flex: 1;
@@ -290,42 +290,36 @@
             <strong><?= esc(trace_app_name()) ?></strong>
             <span><?= esc(trace_app_tagline()) ?></span>
         </div>
-        <br>
         <div class="LoginInlineWave"></div>
     </div>
 
-<div class="LoginInlinePanel">
-    <div class="LoginInlineHeading">
-        <h2>Welcome back !</h2>
-        <p>Masuk ke akun Anda</p>
-    </div>
-
-    <form method="post" action="<?= base_url('login') ?>" class="LoginInlineForm">
-        <?= csrf_field() ?>
-
-        <label class="LoginInlineField">
-            <span>Email / Username</span>
-            <input type="text" name="login" value="<?= esc(old('login')) ?>" placeholder="Masukkan email atau username" required>
-        </label>
-
-        <label class="LoginInlineField">
-            <span>Password</span>
-            <input type="password" name="password" placeholder="Masukkan password" required>
-        </label>
-
-        <button type="submit" class="LoginInlineButton">Login</button>
-
-        <!-- LANGSUNG TEPAT DI BAWAH BUTTON -->
-        <div class="LoginInlineDivider">
-            <span>OR</span>
+    <div class="LoginInlinePanel">
+        <div class="LoginInlineHeading">
+            <h2>Welcome back !</h2>
+            <p>Masuk ke akun Anda</p>
         </div>
+
+        <form method="post" action="<?= base_url('login') ?>" class="LoginInlineForm">
+            <?= csrf_field() ?>
+            <label class="LoginInlineField">
+                <span>Email / Username</span>
+                <input type="text" name="login" value="<?= esc(old('login')) ?>" placeholder="Masukkan email atau username" required>
+            </label>
+
+            <label class="LoginInlineField">
+                <span>Password</span>
+                <input type="password" name="password" placeholder="Masukkan password" required>
+            </label>
+
+            <button type="submit" class="LoginInlineButton">Login</button>
+        </form>
+
+        <div class="LoginInlineDivider"><span>OR</span></div>
 
         <div class="LoginInlineFooter">
             <span>Belum punya akun?</span>
             <a href="<?= base_url('register') ?>">Sign Up</a>
         </div>
-
-    </form>
-</div>
+    </div>
 </section>
 <?= $this->endSection() ?>
