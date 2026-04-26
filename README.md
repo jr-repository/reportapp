@@ -179,7 +179,7 @@ Ikuti langkah berikut untuk menjalankan project ini di lokal.
 
 ```bash
 git clone <url-repository>
-cd "Project 1"
+cd "Project name"
 ```
 
 ### 2. Install dependency

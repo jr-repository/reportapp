@@ -873,6 +873,131 @@ textarea {
     word-break: break-word;
 }
 
+.InfoAccordion {
+    padding: 0;
+    overflow: hidden;
+}
+
+.InfoAccordion summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    cursor: pointer;
+}
+
+.InfoAccordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.AccordionSummaryText {
+    display: grid;
+    gap: 4px;
+}
+
+.AccordionSummaryText span {
+    color: var(--TextMuted);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+.AccordionSummaryIcon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: var(--BrandPrimary);
+    background: var(--SurfaceMuted);
+    border: 1px solid var(--Border);
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.AccordionSummaryIcon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.InfoAccordion[open] .AccordionSummaryIcon {
+    transform: rotate(90deg);
+    background: #fff1eb;
+    color: var(--BrandPrimaryDark);
+}
+
+.AccordionBody {
+    padding: 0 14px 14px;
+    border-top: 1px solid #f0edf2;
+}
+
+.AccordionGroup + .AccordionGroup {
+    margin-top: 12px;
+}
+
+.AccordionGroupTitle {
+    margin: 0 0 8px;
+    color: var(--BrandPrimary);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.AccordionActionRow {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.StructuredRows {
+    display: grid;
+}
+
+.StructuredRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px dashed #f0edf2;
+}
+
+.StructuredRow:last-child {
+    border-bottom: 0;
+}
+
+.StructuredLabel {
+    flex: 1 1 auto;
+    color: var(--TextMuted);
+    font-size: 0.74rem;
+    line-height: 1.5;
+}
+
+.StructuredValue {
+    flex: 0 0 42%;
+    text-align: right;
+    color: var(--TextStrong);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.StructuredNote,
+.StructuredEmpty {
+    padding: 12px 13px;
+    border-radius: 14px;
+    background: var(--SurfaceMuted);
+    line-height: 1.65;
+    word-break: break-word;
+}
+
+.StructuredEmpty {
+    color: var(--TextMuted);
+}
+
 .RichText {
     line-height: 1.6;
     word-break: break-word;

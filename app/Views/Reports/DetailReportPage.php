@@ -1,6 +1,14 @@
 <?= $this->extend('Layouts/MobileLayout') ?>
 
 <?= $this->section('content') ?>
+<?php
+$workerUpdates = $bundle['workerUpdates'] ?? [];
+$heavyEquipment = $bundle['heavyEquipment'] ?? [];
+$hasOvertime = (int) ($bundle['overtime']['is_enabled'] ?? 0) === 1;
+$overtimeText = $hasOvertime
+    ? trim((string) ($bundle['overtime']['start_time'] ?? '-')) . ' - ' . trim((string) ($bundle['overtime']['end_time'] ?? '-'))
+    : 'Tidak ada lembur';
+?>
 <?= view('Components/PageHeader', [
     'eyebrow' => 'Detail Laporan',
     'title' => $bundle['worker']['full_name'],
@@ -22,96 +30,215 @@
     <p><?= esc($bundle['report']['report_code']) ?></p>
 </section>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Identitas</h2>
-        <span><?= esc($bundle['report']['weather_code']) ?></span>
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Identitas</h2>
+            <span><?= esc($bundle['report']['weather_code']) ?></span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <div class="StructuredRows">
+            <div class="StructuredRow">
+                <span class="StructuredLabel">Pelaksana</span>
+                <strong class="StructuredValue"><?= esc($bundle['worker']['full_name']) ?></strong>
+            </div>
+            <div class="StructuredRow">
+                <span class="StructuredLabel">Area</span>
+                <strong class="StructuredValue"><?= esc($bundle['location']['area_label']) ?></strong>
+            </div>
+            <div class="StructuredRow">
+                <span class="StructuredLabel">Lokasi</span>
+                <strong class="StructuredValue"><?= esc($bundle['location']['current_location']) ?></strong>
+            </div>
+            <div class="StructuredRow">
+                <span class="StructuredLabel">Created By</span>
+                <strong class="StructuredValue"><?= esc($bundle['report']['creator_name']) ?></strong>
+            </div>
+        </div>
+        <?php if ($bundle['location']['reason'] !== '') : ?>
+            <div class="AccordionGroup">
+                <p class="AccordionGroupTitle">Keterangan Lokasi</p>
+                <div class="StructuredNote"><?= nl2br(esc($bundle['location']['reason'])) ?></div>
+            </div>
+        <?php endif; ?>
     </div>
-    <div class="DetailList">
-        <div><span>Pelaksana</span><strong><?= esc($bundle['worker']['full_name']) ?></strong></div>
-        <div><span>Area</span><strong><?= esc($bundle['location']['area_label']) ?></strong></div>
-        <div><span>Lokasi</span><strong><?= esc($bundle['location']['current_location']) ?></strong></div>
-        <div><span>Created By</span><strong><?= esc($bundle['report']['creator_name']) ?></strong></div>
-    </div>
-    <?php if ($bundle['location']['reason'] !== '') : ?>
-        <p class="InfoText"><?= esc($bundle['location']['reason']) ?></p>
-    <?php endif; ?>
-</section>
+</details>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Update Pekerja</h2>
-        <span><?= esc((string) count($bundle['workerUpdates'])) ?> item</span>
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Update Pekerja</h2>
+            <span><?= esc((string) count($workerUpdates)) ?> item</span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <?php if ($workerUpdates !== []) : ?>
+            <div class="StructuredRows">
+                <?php foreach ($workerUpdates as $item) : ?>
+                    <div class="StructuredRow">
+                        <span class="StructuredLabel"><?= esc($item['category_label']) ?></span>
+                        <strong class="StructuredValue"><?= esc((string) $item['quantity']) ?></strong>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else : ?>
+            <p class="StructuredEmpty">Belum ada data update pekerja.</p>
+        <?php endif; ?>
     </div>
-    <div class="TagList">
-        <?php foreach ($bundle['workerUpdates'] as $item) : ?>
-            <span class="DataTag"><?= esc($item['category_label']) ?> : <?= esc((string) $item['quantity']) ?></span>
-        <?php endforeach; ?>
-    </div>
-</section>
+</details>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Realisasi Pekerjaan</h2>
-        <span>Resume</span>
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Realisasi Pekerjaan</h2>
+            <span>Resume</span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <div class="StructuredNote"><?= nl2br(esc($bundle['report']['realization_summary'])) ?></div>
     </div>
-    <p class="RichText"><?= nl2br(esc($bundle['report']['realization_summary'])) ?></p>
-</section>
+</details>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Alat Berat</h2>
-        <span><?= esc((string) count($bundle['heavyEquipment'])) ?> item</span>
-    </div>
-    <div class="TagList">
-        <?php foreach ($bundle['heavyEquipment'] as $item) : ?>
-            <span class="DataTag"><?= esc($item['equipment_label']) ?> : <?= esc((string) $item['quantity']) ?></span>
-        <?php endforeach; ?>
-    </div>
-    <p class="RichText"><?= nl2br(esc($bundle['tool']['summary_text'])) ?></p>
-    <p class="RichText"><?= nl2br(esc($bundle['material']['summary_text'])) ?></p>
-</section>
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Alat & Material</h2>
+            <span><?= esc((string) count($heavyEquipment)) ?> alat berat</span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <div class="AccordionGroup">
+            <p class="AccordionGroupTitle">Alat Berat</p>
+            <?php if ($heavyEquipment !== []) : ?>
+                <div class="StructuredRows">
+                    <?php foreach ($heavyEquipment as $item) : ?>
+                        <div class="StructuredRow">
+                            <span class="StructuredLabel"><?= esc($item['equipment_label']) ?></span>
+                            <strong class="StructuredValue"><?= esc((string) $item['quantity']) ?></strong>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else : ?>
+                <p class="StructuredEmpty">Belum ada data alat berat.</p>
+            <?php endif; ?>
+        </div>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Kendala & Rencana</h2>
-        <span>Lapangan</span>
-    </div>
-    <div class="DetailList">
-        <div><span>Bentuk</span><strong><?= esc($bundle['obstacle']['obstacle_shape']) ?></strong></div>
-        <div><span>Penyebab</span><strong><?= esc($bundle['obstacle']['obstacle_cause']) ?></strong></div>
-        <div><span>Dampak</span><strong><?= esc($bundle['obstacle']['obstacle_impact']) ?></strong></div>
-    </div>
-    <?php if ($bundle['obstacle']['additional_note'] !== '') : ?>
-        <p class="RichText"><?= nl2br(esc($bundle['obstacle']['additional_note'])) ?></p>
-    <?php endif; ?>
-    <p class="RichText"><?= nl2br(esc($bundle['tomorrow']['summary_text'])) ?></p>
-    <?php if ((int) $bundle['overtime']['is_enabled'] === 1) : ?>
-        <p class="InfoText">Lembur: <?= esc($bundle['overtime']['start_time']) ?> - <?= esc($bundle['overtime']['end_time']) ?></p>
-    <?php endif; ?>
-</section>
+        <div class="AccordionGroup">
+            <p class="AccordionGroupTitle">Alat Kerja Ringan</p>
+            <div class="StructuredNote"><?= nl2br(esc($bundle['tool']['summary_text'])) ?></div>
+        </div>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Dokumentasi</h2>
-        <span><?= esc((string) count($bundle['photos'])) ?> foto</span>
+        <div class="AccordionGroup">
+            <p class="AccordionGroupTitle">Material & Bahan Kerja</p>
+            <div class="StructuredNote"><?= nl2br(esc($bundle['material']['summary_text'])) ?></div>
+        </div>
     </div>
-    <div class="PhotoPreviewGrid">
-        <?php foreach ($bundle['photos'] as $photo) : ?>
-            <img src="<?= base_url($photo['file_path']) ?>" alt="Foto laporan">
-        <?php endforeach; ?>
-    </div>
-</section>
+</details>
 
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Ringkasan WhatsApp</h2>
-        <button type="button" class="InlineAction isIconOnly" data-copy-target="WhatsAppSummary" aria-label="Salin ringkasan WhatsApp" title="Salin ringkasan WhatsApp" data-copy-default-label="Salin ringkasan WhatsApp" data-copy-success-label="Ringkasan tersalin">
-            <?= trace_icon('copy') ?>
-        </button>
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Kendala & Rencana</h2>
+            <span><?= $hasOvertime ? 'Dengan lembur' : 'Tanpa lembur' ?></span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <div class="AccordionGroup">
+            <p class="AccordionGroupTitle">Kendala Lapangan</p>
+            <div class="StructuredRows">
+                <div class="StructuredRow">
+                    <span class="StructuredLabel">Bentuk Kendala</span>
+                    <strong class="StructuredValue"><?= esc($bundle['obstacle']['obstacle_shape']) ?></strong>
+                </div>
+                <div class="StructuredRow">
+                    <span class="StructuredLabel">Penyebab Kendala</span>
+                    <strong class="StructuredValue"><?= esc($bundle['obstacle']['obstacle_cause']) ?></strong>
+                </div>
+                <div class="StructuredRow">
+                    <span class="StructuredLabel">Dampak Pekerjaan</span>
+                    <strong class="StructuredValue"><?= esc($bundle['obstacle']['obstacle_impact']) ?></strong>
+                </div>
+            </div>
+        </div>
+
+        <?php if ($bundle['obstacle']['additional_note'] !== '') : ?>
+            <div class="AccordionGroup">
+                <p class="AccordionGroupTitle">Catatan Tambahan</p>
+                <div class="StructuredNote"><?= nl2br(esc($bundle['obstacle']['additional_note'])) ?></div>
+            </div>
+        <?php endif; ?>
+
+        <div class="AccordionGroup">
+            <p class="AccordionGroupTitle">Rencana Pekerjaan Esok</p>
+            <div class="StructuredNote"><?= nl2br(esc($bundle['tomorrow']['summary_text'])) ?></div>
+        </div>
+
+        <div class="AccordionGroup">
+            <p class="AccordionGroupTitle">Lembur</p>
+            <div class="StructuredRows">
+                <div class="StructuredRow">
+                    <span class="StructuredLabel">Status</span>
+                    <strong class="StructuredValue"><?= $hasOvertime ? 'Ada lembur' : 'Tidak ada lembur' ?></strong>
+                </div>
+                <div class="StructuredRow">
+                    <span class="StructuredLabel">Jam Kerja</span>
+                    <strong class="StructuredValue"><?= esc($overtimeText) ?></strong>
+                </div>
+                <?php if (trim((string) ($bundle['overtime']['summary_text'] ?? '')) !== '') : ?>
+                    <div class="StructuredRow">
+                        <span class="StructuredLabel">Ringkasan Lembur</span>
+                        <strong class="StructuredValue"><?= esc($bundle['overtime']['summary_text']) ?></strong>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
-    <pre id="WhatsAppSummary" class="SummaryBox"><?= esc($bundle['report']['whatsapp_summary'] ?: 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
-</section>
+</details>
+
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Dokumentasi</h2>
+            <span><?= esc((string) count($bundle['photos'])) ?> foto</span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <?php if ($bundle['photos'] !== []) : ?>
+            <div class="PhotoPreviewGrid">
+                <?php foreach ($bundle['photos'] as $photo) : ?>
+                    <img src="<?= base_url($photo['file_path']) ?>" alt="Foto laporan">
+                <?php endforeach; ?>
+            </div>
+        <?php else : ?>
+            <p class="StructuredEmpty">Belum ada dokumentasi foto pada laporan ini.</p>
+        <?php endif; ?>
+    </div>
+</details>
+
+<details class="InfoCard InfoAccordion">
+    <summary class="AccordionSummary">
+        <div class="AccordionSummaryText">
+            <h2>Ringkasan WhatsApp</h2>
+            <span><?= $bundle['report']['whatsapp_summary'] ? 'Siap disalin' : 'Belum terbentuk' ?></span>
+        </div>
+        <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
+    </summary>
+    <div class="AccordionBody">
+        <div class="AccordionActionRow">
+            <button type="button" class="InlineAction isIconOnly" data-copy-target="WhatsAppSummary" aria-label="Salin ringkasan WhatsApp" title="Salin ringkasan WhatsApp" data-copy-default-label="Salin ringkasan WhatsApp" data-copy-success-label="Ringkasan tersalin">
+                <?= trace_icon('copy') ?>
+            </button>
+        </div>
+        <pre id="WhatsAppSummary" class="SummaryBox"><?= esc($bundle['report']['whatsapp_summary'] ?: 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
+    </div>
+</details>
 
 <?php if ($bundle['report']['status'] !== 'Submitted') : ?>
     <div class="StickyActionBar">
