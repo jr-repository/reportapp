@@ -1,0 +1,12 @@
+- login pakai no hp - verif otp whatsapp pertama kali saja
+- tombol isi dibuat di bawah header agar terlihat besar
+- laporan next dan back ditulis
+- realisasi pekerjaan disesuaikan dengan template
+- dokuemntasi pekerjaan - upload bisa via galery ataupun foto
+- pilih area - jika pilih lainnya, maka isi reaseon, jika idak di hide atau disable saja
+- ditambah : keterangan cuaca
+
+- auto send wa ada ketika simpan draft dan review
+- tambah posisi buatkan add row - agar bisa nambah lebih dri 1 - tab 3. pekerta
+- begitu juga dengan alat berat - tab 4. alat
+- alat kerja - disesuaikan dengan template - isi volume satuan dan lainnya
