@@ -43,14 +43,15 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
 
     public array $authLogin = [
-        'login'    => 'required|min_length[3]|max_length[120]',
+        'phone'    => 'required|min_length[5]|max_length[30]',
         'password' => 'required|min_length[8]|max_length[120]',
     ];
 
     public array $authRegister = [
         'fullName' => 'required|min_length[3]|max_length[120]',
-        'email'    => 'required|valid_email|max_length[160]|is_unique[Users.email]',
+        'email'    => 'permit_empty|valid_email|max_length[160]|is_unique[Users.email]',
         'username' => 'required|alpha_numeric_punct|min_length[4]|max_length[60]|is_unique[Users.username]',
+        'phone'    => 'required|min_length[5]|max_length[30]|is_unique[Users.phone]',
         'password' => 'required|min_length[8]|max_length[120]',
     ];
 
@@ -60,8 +61,8 @@ class Validation extends BaseConfig
         'currentLocation'    => 'required|min_length[5]|max_length[255]',
         'areaCode'           => 'required|in_list[AreaLanal,AreaSwangi,AreaRpi,AreaLaut,Lainnya]',
         'weatherCode'        => 'required|in_list[Cerah,Hujan,Mendung]',
-        'realizationSummary' => 'required|min_length[15]|max_length[5000]',
-        'lightToolSummary'   => 'required|min_length[5]|max_length[5000]',
+        'realizationSummary' => 'permit_empty|max_length[5000]',
+        'lightToolSummary'   => 'permit_empty|max_length[5000]',
         'materialSummary'    => 'required|min_length[5]|max_length[5000]',
         'obstacleShape'      => 'required|min_length[3]|max_length[255]',
         'obstacleCause'      => 'required|min_length[3]|max_length[255]',
@@ -74,8 +75,9 @@ class Validation extends BaseConfig
 
     public array $adminUser = [
         'fullName' => 'required|min_length[3]|max_length[120]',
-        'email'    => 'required|valid_email|max_length[160]',
+        'email'    => 'permit_empty|valid_email|max_length[160]',
         'username' => 'required|alpha_numeric_punct|min_length[4]|max_length[60]',
+        'phone'    => 'required|min_length[5]|max_length[30]',
         'roleId'   => 'required|is_natural_no_zero',
         'status'   => 'required|in_list[Active,Inactive]',
         'password' => 'permit_empty|min_length[8]|max_length[120]',

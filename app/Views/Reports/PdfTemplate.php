@@ -77,6 +77,8 @@ foreach ($photos as $photo) {
 
 $workerRows = $bundle['workerUpdates'] ?? [];
 $heavyRows  = $bundle['heavyEquipment'] ?? [];
+$realizationRows = $bundle['realizationItems'] ?? [];
+$lightToolRows = $bundle['lightTools'] ?? [];
 $materialLines = $splitTextLines($bundle['material']['summary_text'] ?? '');
 $toolLines     = $splitTextLines($bundle['tool']['summary_text'] ?? '');
 $realizationLines = $splitTextLines($report['realization_summary'] ?? '');
@@ -480,20 +482,46 @@ if ($photoCount <= 1) {
                     <td colspan="3"><?= nl2br(esc($location['reason'])) ?></td>
                 </tr>
             <?php endif; ?>
-            <tr>
-                <td class="SummaryLabel">Realisasi</td>
-                <td colspan="3">
-                    <?php if ($realizationLines !== []) : ?>
-                        <ul class="ListBlock">
-                            <?php foreach ($realizationLines as $line) : ?>
-                                <li><?= esc($line) ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else : ?>
-                        -
-                    <?php endif; ?>
-                </td>
-            </tr>
+        </table>
+    </div>
+
+    <div class="Section">
+        <p class="SectionTitle">Detail Realisasi Pekerjaan</p>
+        <table class="DataTable">
+            <thead>
+                <tr>
+                    <th>Item Pekerjaan</th>
+                    <th>Satuan</th>
+                    <th>Rencana</th>
+                    <th>Realisasi</th>
+                    <th>Deviasi</th>
+                    <th>Rekanan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($realizationRows !== []) : ?>
+                    <?php foreach ($realizationRows as $item) : ?>
+                        <tr>
+                            <td><?= esc($formatValue($item['work_item'] ?? '')) ?></td>
+                            <td><?= esc($formatValue($item['unit'] ?? '')) ?></td>
+                            <td><?= esc($formatValue($item['plan_text'] ?? '')) ?></td>
+                            <td><?= esc($formatValue($item['realization_text'] ?? '')) ?></td>
+                            <td><?= esc($formatValue($item['deviation_text'] ?? '')) ?></td>
+                            <td><?= esc($formatValue($item['partner'] ?? '')) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php elseif ($realizationLines !== []) : ?>
+                    <?php foreach ($realizationLines as $line) : ?>
+                        <tr>
+                            <td colspan="6"><?= esc($line) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr>
+                        <td colspan="6" class="MutedCell">Belum ada data realisasi.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
         </table>
     </div>
 
@@ -585,8 +613,8 @@ if ($photoCount <= 1) {
                     <?php foreach ($heavyRows as $item) : ?>
                         <tr>
                             <td><?= esc($formatValue($item['equipment_label'] ?? '')) ?></td>
-                            <td class="TextCenter"><?= esc((string) ($item['quantity'] ?? 0)) ?></td>
-                            <td class="TextCenter">unit</td>
+                            <td class="TextCenter"><?= esc((string) ($item['volume'] ?? $item['quantity'] ?? 0)) ?></td>
+                            <td class="TextCenter"><?= esc($formatValue($item['unit'] ?? 'unit')) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else : ?>
@@ -600,17 +628,36 @@ if ($photoCount <= 1) {
 
     <div class="Section">
         <p class="SectionTitle">Resume Realisasi Alat Kerja Yang Digunakan</p>
-        <div class="Panel">
-            <?php if ($toolLines !== []) : ?>
-                <ul class="ListBlock">
-                    <?php foreach ($toolLines as $line) : ?>
-                        <li><?= esc($line) ?></li>
+        <table class="DataTable">
+            <thead>
+                <tr>
+                    <th style="width: 62%;">Alat Kerja Ringan</th>
+                    <th style="width: 19%;">Volume</th>
+                    <th style="width: 19%;">Satuan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($lightToolRows !== []) : ?>
+                    <?php foreach ($lightToolRows as $item) : ?>
+                        <tr>
+                            <td><?= esc($formatValue($item['tool_label'] ?? '')) ?></td>
+                            <td class="TextCenter"><?= esc($formatValue($item['volume'] ?? '')) ?></td>
+                            <td class="TextCenter"><?= esc($formatValue($item['unit'] ?? '')) ?></td>
+                        </tr>
                     <?php endforeach; ?>
-                </ul>
-            <?php else : ?>
-                -
-            <?php endif; ?>
-        </div>
+                <?php elseif ($toolLines !== []) : ?>
+                    <?php foreach ($toolLines as $line) : ?>
+                        <tr>
+                            <td colspan="3"><?= esc($line) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr>
+                        <td colspan="3" class="MutedCell">Belum ada data alat kerja ringan.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 
     <div class="Section">

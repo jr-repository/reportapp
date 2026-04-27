@@ -6,6 +6,15 @@ $workerUpdates    = $formData['workerUpdates'] ?? [];
 $heavyEquipment   = $formData['heavyEquipment'] ?? [];
 $existingPhotos   = $reportBundle['photos'] ?? [];
 $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
+$realizationItems = old('realizationItems', $formData['realizationItems'] ?? []);
+$workerCustomRows = old('workerCustomRows', $formData['workerCustomRows'] ?? []);
+$heavyCustomRows  = old('heavyCustomRows', $formData['heavyCustomRows'] ?? []);
+$lightTools       = old('lightTools', $formData['lightTools'] ?? []);
+
+$realizationItems = is_array($realizationItems) && $realizationItems !== [] ? $realizationItems : [['work_item' => '', 'unit' => '', 'plan_text' => '', 'realization_text' => '', 'deviation_text' => '', 'partner' => '']];
+$workerCustomRows = is_array($workerCustomRows) && $workerCustomRows !== [] ? $workerCustomRows : [['label' => '', 'quantity' => '']];
+$heavyCustomRows  = is_array($heavyCustomRows) && $heavyCustomRows !== [] ? $heavyCustomRows : [['label' => '', 'quantity' => '', 'volume' => '', 'unit' => 'unit']];
+$lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : [['tool_label' => '', 'volume' => '', 'unit' => '']];
 ?>
 
 <?= view('Components/PageHeader', [
@@ -19,17 +28,19 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
     'hint'     => 'Preferensi ini dipakai saat Anda submit final laporan dari halaman review/detail.',
 ]) ?>
 
-<form method="post" action="<?= base_url('reports/save-draft') ?>" enctype="multipart/form-data" class="StackForm" id="ReportWizardForm" data-step="<?= esc((string) max(1, min(5, $currentStep))) ?>" data-draft-key="<?= esc('trace-report-draft:' . ($currentUser['id'] ?? 'guest') . ':' . ($formData['reportId'] ?? 'new')) ?>">
+<form method="post" action="<?= base_url('reports/save-draft') ?>" enctype="multipart/form-data" class="StackForm" id="ReportWizardForm" data-step="<?= esc((string) max(1, min(7, $currentStep))) ?>" data-draft-key="<?= esc('trace-report-draft:' . ($currentUser['id'] ?? 'guest') . ':' . ($formData['reportId'] ?? 'new')) ?>">
     <?= csrf_field() ?>
     <input type="hidden" name="reportId" value="<?= esc((string) ($formData['reportId'] ?? '')) ?>">
-    <input type="hidden" name="currentStep" id="CurrentStepInput" value="<?= esc((string) max(1, min(5, $currentStep))) ?>">
+    <input type="hidden" name="currentStep" id="CurrentStepInput" value="<?= esc((string) max(1, min(7, $currentStep))) ?>">
 
     <div class="WizardProgress">
         <button type="button" class="WizardChip" data-wizard-jump="1">1. Identitas</button>
         <button type="button" class="WizardChip" data-wizard-jump="2">2. Lokasi</button>
-        <button type="button" class="WizardChip" data-wizard-jump="3">3. Pekerja</button>
-        <button type="button" class="WizardChip" data-wizard-jump="4">4. Alat</button>
-        <button type="button" class="WizardChip" data-wizard-jump="5">5. Kendala</button>
+        <button type="button" class="WizardChip" data-wizard-jump="3">3. Realisasi</button>
+        <button type="button" class="WizardChip" data-wizard-jump="4">4. Pekerja</button>
+        <button type="button" class="WizardChip" data-wizard-jump="5">5. Alat Berat</button>
+        <button type="button" class="WizardChip" data-wizard-jump="6">6. Alat Ringan</button>
+        <button type="button" class="WizardChip" data-wizard-jump="7">7. Kendala</button>
     </div>
 
     <section class="FormSectionCard WizardStep" id="section-identity" data-wizard-step="1">
@@ -56,10 +67,56 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
             </label>
         </div>
 
-        <div class="StickyActionBar isWizard">
-            <a href="<?= base_url('/') ?>" class="GhostButton isArrowOnly" aria-label="Kembali ke dashboard" title="Kembali ke dashboard"><?= trace_icon('back') ?></a>
-            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
-        </div>
+      <style>
+.StickyActionBar.isWizard {
+    display: flex;
+    justify-content: space-between; /* ⬅️ ini kuncinya */
+    align-items: center;
+    padding: 12px;
+}
+
+.StickyActionBar .GhostButton,
+.StickyActionBar .PrimaryButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    min-height: 44px;
+    flex-shrink: 0; /* biar gak ketarik */
+}
+
+.StickyActionBar .GhostButton {
+    background: #f1f1f1;
+    color: #333;
+}
+
+.StickyActionBar .PrimaryButton {
+    background: linear-gradient(135deg, #2c3e70, #c0392b);
+    color: #fff;
+}
+
+.StickyActionBar svg {
+    width: 16px;
+    height: 16px;
+}
+</style>
+
+<div class="StickyActionBar isWizard">
+    <a href="<?= base_url('/') ?>" 
+       class="GhostButton">
+        <?= trace_icon('back') ?>
+        <span>Back</span>
+    </a>
+
+    <button type="button" 
+            class="PrimaryButton" 
+            data-wizard-next>
+        <span>Next</span>
+        <?= trace_icon('next') ?>
+    </button>
+</div>
     </section>
 
     <section class="FormSectionCard WizardStep" id="section-location" data-wizard-step="2">
@@ -74,7 +131,7 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
 
         <label class="FieldBlock">
             <span>Pilih Area</span>
-            <select name="areaCode" required>
+            <select name="areaCode" id="AreaCodeSelect" required>
                 <option value="">Pilih area</option>
                 <?php foreach ($formOptions['areas'] as $area) : ?>
                     <option value="<?= esc($area['code']) ?>" <?= old('areaCode', $formData['areaCode'] ?? '') === $area['code'] ? 'selected' : '' ?>>
@@ -84,7 +141,7 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
             </select>
         </label>
 
-        <label class="FieldBlock">
+        <label class="FieldBlock" id="LocationReasonField">
             <span>Reason / Keterangan Tambahan</span>
             <textarea name="locationReason" rows="3" placeholder="Tambahkan keterangan lokasi bila perlu"><?= esc(old('locationReason', $formData['locationReason'] ?? '')) ?></textarea>
         </label>
@@ -92,7 +149,7 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         <div class="UploadCard" id="section-photo">
             <strong>Dokumentasi Pekerjaan</strong>
             <p>Upload bisa dari galeri atau ambil foto langsung dari device.</p>
-            <input type="file" name="photos[]" id="PhotoInput" accept="image/*" capture="environment" multiple>
+            <input type="file" name="photos[]" id="PhotoInput" accept="image/*" multiple>
             <div id="PhotoPreview" class="PhotoPreviewGrid"></div>
             <?php if ($existingPhotos !== []) : ?>
                 <div class="PhotoPreviewGrid">
@@ -103,6 +160,9 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
             <?php endif; ?>
         </div>
 
+        <label class="FieldBlock">
+            <span>Keterangan Cuaca</span>
+        </label>
         <div class="WeatherOptions">
             <?php foreach ($formOptions['weatherOptions'] as $weather) : ?>
                 <label class="ChoiceChip">
@@ -113,14 +173,59 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </div>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
-            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
+            <button type="button" class="GhostButton" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?><span>Back</span></button>
+            <button type="button" class="PrimaryButton" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><span>Next</span><?= trace_icon('next') ?></button>
         </div>
     </section>
 
-    <section class="FormSectionCard WizardStep" id="section-worker" data-wizard-step="3">
+    <section class="FormSectionCard WizardStep" id="section-realization" data-wizard-step="3">
         <div class="CardHeading">
-            <h2>3. Update Pekerja & Realisasi</h2>
+            <h2>3. Realisasi Pekerjaan</h2>
+            <span>Detail sesuai template</span>
+        </div>
+
+        <div class="DynamicRows" data-dynamic-rows="realizationItems">
+            <?php foreach ($realizationItems as $index => $item) : ?>
+                <div class="DynamicRow" data-dynamic-row>
+                    <label class="FieldBlock">
+                        <span>Item Pekerjaan</span>
+                        <input type="text" name="realizationItems[<?= esc((string) $index) ?>][work_item]" value="<?= esc($item['work_item'] ?? '') ?>" placeholder="Item pekerjaan">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Satuan</span>
+                        <input type="text" name="realizationItems[<?= esc((string) $index) ?>][unit]" value="<?= esc($item['unit'] ?? '') ?>" placeholder="m / m2 / unit">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Rencana</span>
+                        <input type="text" name="realizationItems[<?= esc((string) $index) ?>][plan_text]" value="<?= esc($item['plan_text'] ?? '') ?>" placeholder="Rencana">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Realisasi</span>
+                        <input type="text" name="realizationItems[<?= esc((string) $index) ?>][realization_text]" value="<?= esc($item['realization_text'] ?? '') ?>" placeholder="Realisasi">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Deviasi</span>
+                        <input type="text" name="realizationItems[<?= esc((string) $index) ?>][deviation_text]" value="<?= esc($item['deviation_text'] ?? '') ?>" placeholder="Deviasi">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Rekanan</span>
+                        <input type="text" name="realizationItems[<?= esc((string) $index) ?>][partner]" value="<?= esc($item['partner'] ?? '') ?>" placeholder="Rekanan">
+                    </label>
+                    <button type="button" class="GhostButton DynamicRemoveButton" data-remove-row>Hapus</button>
+                </div>
+            <?php endforeach; ?>
+            <button type="button" class="PrimaryButton DynamicAddButton" data-add-row>Tambah Baris</button>
+        </div>
+
+        <div class="StickyActionBar isWizard">
+            <button type="button" class="GhostButton" data-wizard-prev><?= trace_icon('back') ?><span>Back</span></button>
+            <button type="button" class="PrimaryButton" data-wizard-next><span>Next</span><?= trace_icon('next') ?></button>
+        </div>
+    </section>
+
+    <section class="FormSectionCard WizardStep" id="section-worker" data-wizard-step="4">
+        <div class="CardHeading">
+            <h2>4. Update Pekerja</h2>
             <span>Isi jumlah tenaga kerja yang hadir</span>
         </div>
         <div class="CounterGrid">
@@ -132,31 +237,33 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
             <?php endforeach; ?>
         </div>
 
-        <div class="FieldGrid">
-            <label class="FieldBlock">
-                <span>Tambahan Posisi</span>
-                <input type="text" name="workerCustomLabel" value="<?= esc(old('workerCustomLabel', $formData['workerCustomLabel'] ?? '')) ?>" placeholder="Isi disini jika tidak ada pilihan">
-            </label>
-            <label class="FieldBlock">
-                <span>Jumlah</span>
-                <input type="number" min="0" name="workerCustomQuantity" value="<?= esc(old('workerCustomQuantity', $formData['workerCustomQuantity'] ?? '')) ?>" placeholder="0">
-            </label>
+        <div class="DynamicRows" data-dynamic-rows="workerCustomRows">
+            <p class="AccordionGroupTitle">Tambahan Posisi dan Jumlah</p>
+            <?php foreach ($workerCustomRows as $index => $item) : ?>
+                <div class="DynamicRow isTwoColumn" data-dynamic-row>
+                    <label class="FieldBlock">
+                        <span>Tambahan Posisi</span>
+                        <input type="text" name="workerCustomRows[<?= esc((string) $index) ?>][label]" value="<?= esc($item['label'] ?? '') ?>" placeholder="Isi disini jika tidak ada pilihan">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Jumlah</span>
+                        <input type="number" min="0" name="workerCustomRows[<?= esc((string) $index) ?>][quantity]" value="<?= esc($item['quantity'] ?? '') ?>" placeholder="0">
+                    </label>
+                    <button type="button" class="GhostButton DynamicRemoveButton" data-remove-row>Hapus</button>
+                </div>
+            <?php endforeach; ?>
+            <button type="button" class="PrimaryButton DynamicAddButton" data-add-row>Tambah Posisi</button>
         </div>
 
-        <label class="FieldBlock">
-            <span>Realisasi Pekerjaan</span>
-            <textarea name="realizationSummary" rows="7" class="LargeTextarea" placeholder="Tuliskan progres pekerjaan, volume, dan keterangan penting lain" required><?= esc(old('realizationSummary', $formData['realizationSummary'] ?? '')) ?></textarea>
-        </label>
-
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
-            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
+            <button type="button" class="GhostButton" data-wizard-prev><?= trace_icon('back') ?><span>Back</span></button>
+            <button type="button" class="PrimaryButton" data-wizard-next><span>Next</span><?= trace_icon('next') ?></button>
         </div>
     </section>
 
-    <section class="FormSectionCard WizardStep" id="section-heavy" data-wizard-step="4">
+    <section class="FormSectionCard WizardStep" id="section-heavy" data-wizard-step="5">
         <div class="CardHeading">
-            <h2>4. Alat Berat, Alat Ringan & Material</h2>
+            <h2>5. Alat Berat</h2>
             <span>Input operasional hari ini</span>
         </div>
         <div class="CounterGrid">
@@ -168,21 +275,65 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
             <?php endforeach; ?>
         </div>
 
-        <div class="FieldGrid">
-            <label class="FieldBlock">
-                <span>Alat Berat Tambahan</span>
-                <input type="text" name="heavyCustomLabel" value="<?= esc(old('heavyCustomLabel', $formData['heavyCustomLabel'] ?? '')) ?>" placeholder="Isi disini jika tidak ada pilihan">
-            </label>
-            <label class="FieldBlock">
-                <span>Jumlah</span>
-                <input type="number" min="0" name="heavyCustomQuantity" value="<?= esc(old('heavyCustomQuantity', $formData['heavyCustomQuantity'] ?? '')) ?>" placeholder="0">
-            </label>
+        <div class="DynamicRows" data-dynamic-rows="heavyCustomRows">
+            <p class="AccordionGroupTitle">Alat Berat Tambahan</p>
+            <?php foreach ($heavyCustomRows as $index => $item) : ?>
+                <div class="DynamicRow" data-dynamic-row>
+                    <label class="FieldBlock">
+                        <span>Nama Alat</span>
+                        <input type="text" name="heavyCustomRows[<?= esc((string) $index) ?>][label]" value="<?= esc($item['label'] ?? '') ?>" placeholder="Isi disini jika tidak ada pilihan">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Jumlah</span>
+                        <input type="number" min="0" name="heavyCustomRows[<?= esc((string) $index) ?>][quantity]" value="<?= esc($item['quantity'] ?? '') ?>" placeholder="0">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Volume</span>
+                        <input type="text" name="heavyCustomRows[<?= esc((string) $index) ?>][volume]" value="<?= esc($item['volume'] ?? '') ?>" placeholder="Volume">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Satuan</span>
+                        <input type="text" name="heavyCustomRows[<?= esc((string) $index) ?>][unit]" value="<?= esc($item['unit'] ?? 'unit') ?>" placeholder="unit">
+                    </label>
+                    <button type="button" class="GhostButton DynamicRemoveButton" data-remove-row>Hapus</button>
+                </div>
+            <?php endforeach; ?>
+            <button type="button" class="PrimaryButton DynamicAddButton" data-add-row>Tambah Alat Berat</button>
         </div>
 
-        <label class="FieldBlock">
-            <span>Alat Kerja Ringan</span>
-            <textarea name="lightToolSummary" rows="4" placeholder="Contoh: menggunakan alat kerja XXX untuk pekerjaan AAA" required><?= esc(old('lightToolSummary', $formData['lightToolSummary'] ?? '')) ?></textarea>
-        </label>
+        <div class="StickyActionBar isWizard">
+            <button type="button" class="GhostButton" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?><span>Back</span></button>
+            <button type="button" class="PrimaryButton" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><span>Next</span><?= trace_icon('next') ?></button>
+        </div>
+    </section>
+
+    <section class="FormSectionCard WizardStep" id="section-light-tool" data-wizard-step="6">
+        <div class="CardHeading">
+            <h2>6. Alat Kerja Ringan & Material</h2>
+            <span>Volume dan satuan alat ringan</span>
+        </div>
+
+        <div class="DynamicRows" data-dynamic-rows="lightTools">
+            <p class="AccordionGroupTitle">Alat Kerja Ringan</p>
+            <?php foreach ($lightTools as $index => $item) : ?>
+                <div class="DynamicRow isThreeColumn" data-dynamic-row>
+                    <label class="FieldBlock">
+                        <span>Nama Alat</span>
+                        <input type="text" name="lightTools[<?= esc((string) $index) ?>][tool_label]" value="<?= esc($item['tool_label'] ?? '') ?>" placeholder="Nama alat">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Volume</span>
+                        <input type="text" name="lightTools[<?= esc((string) $index) ?>][volume]" value="<?= esc($item['volume'] ?? '') ?>" placeholder="Volume">
+                    </label>
+                    <label class="FieldBlock">
+                        <span>Satuan</span>
+                        <input type="text" name="lightTools[<?= esc((string) $index) ?>][unit]" value="<?= esc($item['unit'] ?? '') ?>" placeholder="pcs / unit">
+                    </label>
+                    <button type="button" class="GhostButton DynamicRemoveButton" data-remove-row>Hapus</button>
+                </div>
+            <?php endforeach; ?>
+            <button type="button" class="PrimaryButton DynamicAddButton" data-add-row>Tambah Alat Ringan</button>
+        </div>
 
         <label class="FieldBlock" id="section-material">
             <span>Material & Bahan Kerja</span>
@@ -190,14 +341,14 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </label>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
-            <button type="button" class="PrimaryButton isArrowOnly" data-wizard-next aria-label="Lanjut ke langkah berikutnya" title="Lanjut ke langkah berikutnya"><?= trace_icon('next') ?></button>
+            <button type="button" class="GhostButton" data-wizard-prev><?= trace_icon('back') ?><span>Back</span></button>
+            <button type="button" class="PrimaryButton" data-wizard-next><span>Next</span><?= trace_icon('next') ?></button>
         </div>
     </section>
 
-    <section class="FormSectionCard WizardStep" id="section-obstacle" data-wizard-step="5">
+    <section class="FormSectionCard WizardStep" id="section-obstacle" data-wizard-step="7">
         <div class="CardHeading">
-            <h2>5. Kendala, Rencana Esok & Lembur</h2>
+            <h2>7. Kendala, Rencana Esok & Lembur</h2>
             <span>Lengkapi penutup laporan</span>
         </div>
 
@@ -253,7 +404,7 @@ $currentStep      = (int) old('currentStep', $formData['currentStep'] ?? 1);
         </div>
 
         <div class="StickyActionBar isWizard">
-            <button type="button" class="GhostButton isArrowOnly" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?></button>
+            <button type="button" class="GhostButton" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?><span>Back</span></button>
             <button type="submit" class="PrimaryButton">Simpan Draft & Review</button>
         </div>
     </section>

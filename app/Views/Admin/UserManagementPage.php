@@ -24,8 +24,8 @@
 
         <div class="FieldGrid">
             <label class="FieldBlock">
-                <span>Email</span>
-                <input type="email" name="email" value="<?= esc(old('email', $editUser['email'] ?? '')) ?>" required>
+                <span>Email (Opsional)</span>
+                <input type="email" name="email" value="<?= esc(old('email', $editUser['email'] ?? '')) ?>">
             </label>
             <label class="FieldBlock">
                 <span>Username</span>
@@ -64,7 +64,7 @@
 
         <label class="FieldBlock">
             <span>Nomor HP</span>
-            <input type="text" name="phone" value="<?= esc(old('phone', $editUser['phone'] ?? '')) ?>">
+            <input type="tel" name="phone" value="<?= esc(old('phone', $editUser['phone'] ?? '')) ?>" required>
         </label>
 
         <label class="FieldBlock">

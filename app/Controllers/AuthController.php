@@ -19,15 +19,41 @@ class AuthController extends BaseController
 
     public function login()
     {
-        $payload = $this->request->getPost(['login', 'password']);
+        $payload = $this->request->getPost(['phone', 'password']);
         $rules   = config(\Config\Validation::class)->authLogin;
 
         if (! service('validation')->setRules($rules)->run($payload)) {
             return redirect()->back()->withInput()->with('errors', service('validation')->getErrors());
         }
 
-        if (! $this->authService->attempt((string) $payload['login'], (string) $payload['password'], $this->request)) {
-            return redirect()->back()->withInput()->with('error', 'Email/username atau password tidak valid.');
+        $result = $this->authService->startOtpLogin((string) $payload['phone'], (string) $payload['password'], $this->request);
+
+        if (! $result['success']) {
+            return redirect()->back()->withInput()->with('errors', $result['errors']);
+        }
+
+        return redirect()->to(base_url('login/otp'))->with('success', 'OTP sudah dikirim ke WhatsApp.');
+    }
+
+    public function otpPage(): string
+    {
+        return $this->page('Auth/LoginPage', [
+            'pageTitle' => 'Verifikasi OTP',
+            'pageClass' => 'AuthPage',
+            'otpMode'   => true,
+        ]);
+    }
+
+    public function verifyOtp()
+    {
+        $otp = trim((string) $this->request->getPost('otp'));
+        if ($otp === '') {
+            return redirect()->back()->withInput()->with('errors', ['otp' => 'OTP wajib diisi.']);
+        }
+
+        $result = $this->authService->verifyOtpLogin($otp, $this->request);
+        if (! $result['success']) {
+            return redirect()->back()->withInput()->with('errors', $result['errors']);
         }
 
         return redirect()->to(base_url('/'))->with('success', 'Login berhasil.');

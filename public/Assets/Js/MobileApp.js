@@ -227,6 +227,83 @@
         sync();
     };
 
+    const initConditionalAreaReason = () => {
+        const select = document.getElementById('AreaCodeSelect');
+        const field = document.getElementById('LocationReasonField');
+
+        if (!select || !field) {
+            return;
+        }
+
+        const input = field.querySelector('textarea, input');
+        const sync = () => {
+            const visible = select.value === 'Lainnya';
+            field.style.display = visible ? 'grid' : 'none';
+            if (input) {
+                input.disabled = !visible;
+                if (!visible) {
+                    input.value = '';
+                }
+            }
+        };
+
+        select.addEventListener('change', sync);
+        sync();
+    };
+
+    const initDynamicRows = () => {
+        document.querySelectorAll('[data-dynamic-rows]').forEach((container) => {
+            const addButton = container.querySelector('[data-add-row]');
+
+            const reindex = () => {
+                Array.from(container.querySelectorAll('[data-dynamic-row]')).forEach((row, index) => {
+                    row.querySelectorAll('[name]').forEach((field) => {
+                        field.name = field.name.replace(/\[\d+\]/, `[${index}]`);
+                    });
+                });
+            };
+
+            container.addEventListener('click', (event) => {
+                const target = event.target instanceof Element ? event.target : null;
+                if (!target) {
+                    return;
+                }
+
+                const removeButton = target.closest('[data-remove-row]');
+                if (removeButton) {
+                    const rows = container.querySelectorAll('[data-dynamic-row]');
+                    const row = removeButton.closest('[data-dynamic-row]');
+                    if (row && rows.length > 1) {
+                        row.remove();
+                        reindex();
+                    }
+                    return;
+                }
+
+                if (target.closest('[data-add-row]') && addButton) {
+                    const rows = container.querySelectorAll('[data-dynamic-row]');
+                    const lastRow = rows[rows.length - 1];
+                    if (!lastRow) {
+                        return;
+                    }
+
+                    const clone = lastRow.cloneNode(true);
+                    clone.querySelectorAll('input, textarea, select').forEach((field) => {
+                        if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
+                            field.value = field.name.endsWith('[unit]') ? 'unit' : '';
+                        } else if (field instanceof HTMLSelectElement) {
+                            field.selectedIndex = 0;
+                        }
+                    });
+                    container.insertBefore(clone, addButton);
+                    reindex();
+                }
+            });
+
+            reindex();
+        });
+    };
+
     const initBannerCarousel = () => {
         const carousel = document.getElementById('BannerCarousel');
         const dotsWrap = document.getElementById('CarouselDots');
@@ -807,6 +884,8 @@
         initPhotoPreview();
         initCopyButtons();
         initOvertimeToggle();
+        initConditionalAreaReason();
+        initDynamicRows();
         initBannerCarousel();
         initQuickMenuToggle();
         initStatusToggle();

@@ -8,9 +8,9 @@ $menuItems = [
     ['label' => 'Lokasi', 'href' => base_url('reports/create#section-location'), 'icon' => 'pin'],
     ['label' => 'Foto', 'href' => base_url('reports/create#section-photo'), 'icon' => 'camera'],
     ['label' => 'Pekerja', 'href' => base_url('reports/create#section-worker'), 'icon' => 'team'],
-    ['label' => 'Progress', 'href' => base_url('reports/create#section-worker'), 'icon' => 'clipboard'],
+    ['label' => 'Progress', 'href' => base_url('reports/create#section-realization'), 'icon' => 'clipboard'],
     ['label' => 'Alat', 'href' => base_url('reports/create#section-heavy'), 'icon' => 'truck'],
-    ['label' => 'Material', 'href' => base_url('reports/create#section-material'), 'icon' => 'box'],
+    ['label' => 'Material', 'href' => base_url('reports/create#section-light-tool'), 'icon' => 'box'],
     ['label' => 'Kendala', 'href' => base_url('reports/create#section-obstacle'), 'icon' => 'alert'],
     ['label' => 'Review', 'href' => $latestReport ? base_url('reports/detail/' . $latestReport['id']) : base_url('reports/create'), 'icon' => 'detail'],
 ];
@@ -29,9 +29,12 @@ $secondaryMenuItems = array_slice($menuItems, 7);
             <span><?= esc((string) $homeData['submittedCount']) ?> selesai</span>
         </div>
     </div>
-    <a href="<?= base_url('reports/create') ?>" class="PrimaryButton isCompact">Isi</a>
 </section>
 
+<section class="DashboardPrimaryAction">
+    <a href="<?= base_url('reports/create') ?>" class="PrimaryButton">Isi</a>
+</section>
+<br>
 <section class="CompactStatGrid">
     <article class="MiniMetricCard">
         <span class="MetricLabel">Sudah Isi</span>

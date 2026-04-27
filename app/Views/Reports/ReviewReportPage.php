@@ -45,6 +45,8 @@
         <div><span>Lokasi</span><strong><?= esc($bundle['location']['area_label'] . ' - ' . $bundle['location']['current_location']) ?></strong></div>
         <div><span>Cuaca</span><strong><?= esc($bundle['report']['weather_code']) ?></strong></div>
         <div><span>Foto</span><strong><?= esc((string) count($bundle['photos'])) ?> file</strong></div>
+        <div><span>Realisasi</span><strong><?= esc((string) count($bundle['realizationItems'] ?? [])) ?> baris</strong></div>
+        <div><span>Alat Ringan</span><strong><?= esc((string) count($bundle['lightTools'] ?? [])) ?> item</strong></div>
     </div>
 </section>
 

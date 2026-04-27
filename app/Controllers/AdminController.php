@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\RoleModel;
 use App\Models\UserModel;
+use App\Services\AuthService;
 use App\Services\DailyReportService;
 
 class AdminController extends BaseController
@@ -49,9 +50,9 @@ class AdminController extends BaseController
         $data = [
             'role_id'   => (int) $payload['roleId'],
             'full_name' => trim((string) $payload['fullName']),
-            'email'     => strtolower(trim((string) $payload['email'])),
+            'email'     => trim((string) $payload['email']) === '' ? null : strtolower(trim((string) $payload['email'])),
             'username'  => trim((string) $payload['username']),
-            'phone'     => trim((string) ($payload['phone'] ?? '')),
+            'phone'     => (new AuthService())->normalizePhone((string) ($payload['phone'] ?? '')),
             'status'    => $payload['status'],
         ];
 
@@ -67,7 +68,7 @@ class AdminController extends BaseController
                 return redirect()->back()->with('error', 'User yang akan diubah tidak ditemukan.');
             }
 
-            if ($existing['email'] !== $data['email'] && $this->userModel->where('email', $data['email'])->where('id !=', $userId)->countAllResults() > 0) {
+            if ($data['email'] !== null && $existing['email'] !== $data['email'] && $this->userModel->where('email', $data['email'])->where('id !=', $userId)->countAllResults() > 0) {
                 return redirect()->back()->withInput()->with('error', 'Email sudah dipakai user lain.');
             }
 
@@ -75,11 +76,15 @@ class AdminController extends BaseController
                 return redirect()->back()->withInput()->with('error', 'Username sudah dipakai user lain.');
             }
 
+            if ($existing['phone'] !== $data['phone'] && $this->userModel->where('phone', $data['phone'])->where('id !=', $userId)->countAllResults() > 0) {
+                return redirect()->back()->withInput()->with('error', 'Nomor HP sudah dipakai user lain.');
+            }
+
             $this->userModel->update($userId, $data);
             $message = 'Data user berhasil diperbarui.';
         } else {
-            if ($this->userModel->where('email', $data['email'])->countAllResults() > 0 || $this->userModel->where('username', $data['username'])->countAllResults() > 0) {
-                return redirect()->back()->withInput()->with('error', 'Email atau username sudah digunakan.');
+            if (($data['email'] !== null && $this->userModel->where('email', $data['email'])->countAllResults() > 0) || $this->userModel->where('username', $data['username'])->countAllResults() > 0 || $this->userModel->where('phone', $data['phone'])->countAllResults() > 0) {
+                return redirect()->back()->withInput()->with('error', 'Email, username, atau nomor HP sudah digunakan.');
             }
 
             if (! array_key_exists('password_hash', $data)) {

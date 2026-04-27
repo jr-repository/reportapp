@@ -19,6 +19,8 @@ class CreateReportHeavyEquipmentUsagesTable extends Migration
         `heavy_equipment_category_id` bigint unsigned DEFAULT NULL,
         `equipment_label` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
         `quantity` int NOT NULL DEFAULT '0',
+        `volume` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+        `unit` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT 'unit',
         `created_at` datetime DEFAULT NULL,
         `updated_at` datetime DEFAULT NULL,
         PRIMARY KEY (`id`),

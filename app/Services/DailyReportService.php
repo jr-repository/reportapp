@@ -105,8 +105,12 @@ class DailyReportService
             return ['success' => false, 'errors' => ['authorization' => 'Anda tidak berhak mengubah laporan ini.']];
         }
 
-        $workerUpdates  = $this->normalizeWorkerUpdates($payload);
-        $heavyEquipment = $this->normalizeHeavyEquipment($payload);
+        $workerUpdates    = $this->normalizeWorkerUpdates($payload);
+        $heavyEquipment   = $this->normalizeHeavyEquipment($payload);
+        $realizationItems = $this->normalizeRealizationItems($payload);
+        $lightToolRows    = $this->normalizeLightToolRows($payload);
+        $realizationText  = $this->buildRealizationSummary($realizationItems, (string) ($payload['realizationSummary'] ?? ''));
+        $lightToolText    = $this->buildLightToolSummary($lightToolRows, (string) ($payload['lightToolSummary'] ?? ''));
         $uploadedPhotos = $this->filterPhotoInputs($files['photos'] ?? []);
 
         if ($uploadedPhotos === [] && $existingPhotos === []) {
@@ -137,7 +141,7 @@ class DailyReportService
                 'worker_user_id'      => (int) $payload['workerUserId'],
                 'created_by_user_id'  => $existing['report']['created_by_user_id'],
                 'weather_code'        => $payload['weatherCode'],
-                'realization_summary' => trim((string) $payload['realizationSummary']),
+                'realization_summary' => $realizationText,
                 'status'              => 'Draft',
             ]);
             $reportId = (int) ($payload['reportId'] ?? 0);
@@ -148,7 +152,7 @@ class DailyReportService
                 'worker_user_id'      => (int) $payload['workerUserId'],
                 'created_by_user_id'  => (int) $actor['id'],
                 'weather_code'        => $payload['weatherCode'],
-                'realization_summary' => trim((string) $payload['realizationSummary']),
+                'realization_summary' => $realizationText,
                 'status'              => 'Draft',
             ], true);
         }
@@ -167,7 +171,7 @@ class DailyReportService
         ]);
 
         $this->upsertSingleTable('ReportToolSummaries', 'daily_report_id', $reportId, [
-            'summary_text' => trim((string) $payload['lightToolSummary']),
+            'summary_text' => $lightToolText,
             'updated_at'   => date('Y-m-d H:i:s'),
         ]);
 
@@ -210,6 +214,37 @@ class DailyReportService
                 'heavy_equipment_category_id'=> $item['category_id'],
                 'equipment_label'            => $item['label'],
                 'quantity'                   => $item['quantity'],
+                'volume'                     => $item['volume'],
+                'unit'                       => $item['unit'],
+            ]);
+        }
+
+        $db->table('ReportRealizationItems')->where('daily_report_id', $reportId)->delete();
+        foreach ($realizationItems as $index => $item) {
+            $db->table('ReportRealizationItems')->insert([
+                'daily_report_id' => $reportId,
+                'work_item'       => $item['work_item'],
+                'unit'            => $item['unit'],
+                'plan_text'       => $item['plan_text'],
+                'realization_text'=> $item['realization_text'],
+                'deviation_text'  => $item['deviation_text'],
+                'partner'         => $item['partner'],
+                'sort_order'      => $index + 1,
+                'created_at'      => date('Y-m-d H:i:s'),
+                'updated_at'      => date('Y-m-d H:i:s'),
+            ]);
+        }
+
+        $db->table('ReportLightToolUsages')->where('daily_report_id', $reportId)->delete();
+        foreach ($lightToolRows as $index => $item) {
+            $db->table('ReportLightToolUsages')->insert([
+                'daily_report_id' => $reportId,
+                'tool_label'      => $item['tool_label'],
+                'volume'          => $item['volume'],
+                'unit'            => $item['unit'],
+                'sort_order'      => $index + 1,
+                'created_at'      => date('Y-m-d H:i:s'),
+                'updated_at'      => date('Y-m-d H:i:s'),
             ]);
         }
 
@@ -302,6 +337,8 @@ class DailyReportService
             'photos'         => $this->reportPhotoModel->where('daily_report_id', $reportId)->orderBy('sort_order', 'ASC')->findAll(),
             'workerUpdates'  => $this->reportWorkerUpdateModel->where('daily_report_id', $reportId)->orderBy('quantity', 'DESC')->findAll(),
             'heavyEquipment' => $this->reportHeavyEquipmentUsageModel->where('daily_report_id', $reportId)->orderBy('quantity', 'DESC')->findAll(),
+            'realizationItems' => $db->table('ReportRealizationItems')->where('daily_report_id', $reportId)->orderBy('sort_order', 'ASC')->get()->getResultArray(),
+            'lightTools'     => $db->table('ReportLightToolUsages')->where('daily_report_id', $reportId)->orderBy('sort_order', 'ASC')->get()->getResultArray(),
             'checklist'      => $this->buildChecklist($reportId),
         ];
     }
@@ -315,9 +352,9 @@ class DailyReportService
             ['label' => 'Update Dokumentasi Pekerjaan', 'done' => $bundle['photos'] !== []],
             ['label' => 'Update Kondisi Cuaca', 'done' => trim((string) $bundle['report']['weather_code']) !== ''],
             ['label' => 'Update Pekerja', 'done' => $bundle['workerUpdates'] !== []],
-            ['label' => 'Update Realisasi Pekerjaan', 'done' => trim((string) $bundle['report']['realization_summary']) !== ''],
+            ['label' => 'Update Realisasi Pekerjaan', 'done' => ($bundle['realizationItems'] ?? []) !== [] || trim((string) $bundle['report']['realization_summary']) !== ''],
             ['label' => 'Update Alat Berat', 'done' => $bundle['heavyEquipment'] !== []],
-            ['label' => 'Update Alat Kerja Ringan', 'done' => trim((string) $bundle['tool']['summary_text']) !== ''],
+            ['label' => 'Update Alat Kerja Ringan', 'done' => ($bundle['lightTools'] ?? []) !== [] || trim((string) $bundle['tool']['summary_text']) !== ''],
             ['label' => 'Update Material & Bahan', 'done' => trim((string) $bundle['material']['summary_text']) !== ''],
             ['label' => 'Update Kendala Pekerjaan', 'done' => trim((string) $bundle['obstacle']['obstacle_shape']) !== ''],
             ['label' => 'Update Rencana Pekerjaan Esok', 'done' => trim((string) $bundle['tomorrow']['summary_text']) !== ''],
@@ -352,6 +389,8 @@ class DailyReportService
             'photos'         => $this->reportPhotoModel->where('daily_report_id', $reportId)->findAll(),
             'workerUpdates'  => $this->reportWorkerUpdateModel->where('daily_report_id', $reportId)->findAll(),
             'heavyEquipment' => $this->reportHeavyEquipmentUsageModel->where('daily_report_id', $reportId)->findAll(),
+            'realizationItems' => $db->table('ReportRealizationItems')->where('daily_report_id', $reportId)->get()->getResultArray(),
+            'lightTools'     => $db->table('ReportLightToolUsages')->where('daily_report_id', $reportId)->get()->getResultArray(),
         ];
     }
 
@@ -382,6 +421,18 @@ class DailyReportService
             ];
         }
 
+        foreach (($payload['workerCustomRows'] ?? []) as $row) {
+            $label = trim((string) ($row['label'] ?? ''));
+            $quantity = (int) ($row['quantity'] ?? 0);
+            if ($label !== '' && $quantity > 0) {
+                $items[] = [
+                    'category_id' => null,
+                    'label'       => $label,
+                    'quantity'    => $quantity,
+                ];
+            }
+        }
+
         return $items;
     }
 
@@ -398,6 +449,8 @@ class DailyReportService
                     'category_id' => (int) $category['id'],
                     'label'       => $category['name'],
                     'quantity'    => $quantity,
+                    'volume'      => (string) $quantity,
+                    'unit'        => 'unit',
                 ];
             }
         }
@@ -409,10 +462,89 @@ class DailyReportService
                 'category_id' => null,
                 'label'       => $customLabel,
                 'quantity'    => $customQuantity,
+                'volume'      => trim((string) ($payload['heavyCustomVolume'] ?? $customQuantity)),
+                'unit'        => trim((string) ($payload['heavyCustomUnit'] ?? 'unit')) ?: 'unit',
+            ];
+        }
+
+        foreach (($payload['heavyCustomRows'] ?? []) as $row) {
+            $label = trim((string) ($row['label'] ?? ''));
+            $quantity = (int) ($row['quantity'] ?? 0);
+            if ($label !== '' && $quantity > 0) {
+                $items[] = [
+                    'category_id' => null,
+                    'label'       => $label,
+                    'quantity'    => $quantity,
+                    'volume'      => trim((string) ($row['volume'] ?? $quantity)),
+                    'unit'        => trim((string) ($row['unit'] ?? 'unit')) ?: 'unit',
+                ];
+            }
+        }
+
+        return $items;
+    }
+
+    private function normalizeRealizationItems(array $payload): array
+    {
+        $items = [];
+        foreach (($payload['realizationItems'] ?? []) as $row) {
+            $workItem = trim((string) ($row['work_item'] ?? ''));
+            if ($workItem === '') {
+                continue;
+            }
+
+            $items[] = [
+                'work_item'        => $workItem,
+                'unit'             => trim((string) ($row['unit'] ?? '')),
+                'plan_text'        => trim((string) ($row['plan_text'] ?? '')),
+                'realization_text' => trim((string) ($row['realization_text'] ?? '')),
+                'deviation_text'   => trim((string) ($row['deviation_text'] ?? '')),
+                'partner'          => trim((string) ($row['partner'] ?? '')),
             ];
         }
 
         return $items;
+    }
+
+    private function normalizeLightToolRows(array $payload): array
+    {
+        $items = [];
+        foreach (($payload['lightTools'] ?? []) as $row) {
+            $label = trim((string) ($row['tool_label'] ?? ''));
+            if ($label === '') {
+                continue;
+            }
+
+            $items[] = [
+                'tool_label' => $label,
+                'volume'     => trim((string) ($row['volume'] ?? '')),
+                'unit'       => trim((string) ($row['unit'] ?? '')),
+            ];
+        }
+
+        return $items;
+    }
+
+    private function buildRealizationSummary(array $items, string $fallback): string
+    {
+        if ($items === []) {
+            return trim($fallback);
+        }
+
+        return implode("\n", array_map(static function (array $item): string {
+            return trim($item['work_item'] . ' | Sat: ' . $item['unit'] . ' | Rencana: ' . $item['plan_text'] . ' | Realisasi: ' . $item['realization_text'] . ' | Deviasi: ' . $item['deviation_text'] . ' | Rekanan: ' . $item['partner']);
+        }, $items));
+    }
+
+    private function buildLightToolSummary(array $items, string $fallback): string
+    {
+        if ($items === []) {
+            return trim($fallback);
+        }
+
+        return implode("\n", array_map(static function (array $item): string {
+            return trim($item['tool_label'] . ' | Volume: ' . $item['volume'] . ' ' . $item['unit']);
+        }, $items));
     }
 
     /**

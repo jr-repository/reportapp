@@ -754,6 +754,30 @@ textarea {
     padding: 10px 11px;
 }
 
+.DynamicRows {
+    display: grid;
+    gap: 10px;
+}
+
+.DynamicRow {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #efeef3;
+    border-radius: 12px;
+    background: #fbfbfd;
+}
+
+.DynamicRow.isTwoColumn,
+.DynamicRow.isThreeColumn {
+    grid-template-columns: 1fr;
+}
+
+.DynamicRemoveButton,
+.DynamicAddButton {
+    width: 100%;
+}
+
 .PrimaryButton,
 .SecondaryActionButton,
 .GhostButton,
@@ -809,6 +833,12 @@ textarea {
 
 .StickyActionBar.isWizard {
     margin-top: 12px;
+}
+
+.DashboardPrimaryAction .PrimaryButton {
+    width: 100%;
+    min-height: 48px;
+    font-size: 0.9rem;
 }
 
 .ChecklistList {

@@ -36,7 +36,16 @@ class UserModel extends Model
             ->groupStart()
                 ->where('Users.email', $login)
                 ->orWhere('Users.username', $login)
+                ->orWhere('Users.phone', $login)
             ->groupEnd()
+            ->first();
+    }
+
+    public function findByPhone(string $phone): ?array
+    {
+        return $this->select('Users.*, Roles.code as role_code, Roles.name as role_name')
+            ->join('Roles', 'Roles.id = Users.role_id', 'left')
+            ->where('Users.phone', $phone)
             ->first();
     }
 

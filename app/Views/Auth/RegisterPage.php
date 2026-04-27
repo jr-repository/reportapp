@@ -299,8 +299,8 @@
             </label>
 
             <label class="RegisterInlineField">
-                <span>Email</span>
-                <input type="email" name="email" value="<?= esc(old('email')) ?>" required>
+                <span>Email (Opsional)</span>
+                <input type="email" name="email" value="<?= esc(old('email')) ?>">
             </label>
 
             <label class="RegisterInlineField">
@@ -310,7 +310,7 @@
 
             <label class="RegisterInlineField">
                 <span>Nomor HP</span>
-                <input type="text" name="phone" value="<?= esc(old('phone')) ?>" placeholder="Opsional">
+                <input type="tel" name="phone" value="<?= esc(old('phone')) ?>" placeholder="Contoh: 08 / 628 / 8" required>
             </label>
 
             <label class="RegisterInlineField">

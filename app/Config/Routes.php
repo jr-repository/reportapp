@@ -8,6 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->group('', ['filter' => 'guest'], static function (RouteCollection $routes): void {
     $routes->get('login', 'AuthController::loginPage');
     $routes->post('login', 'AuthController::login');
+    $routes->get('login/otp', 'AuthController::otpPage');
+    $routes->post('login/otp', 'AuthController::verifyOtp');
     $routes->get('register', 'AuthController::registerPage');
     $routes->post('register', 'AuthController::register');
 });

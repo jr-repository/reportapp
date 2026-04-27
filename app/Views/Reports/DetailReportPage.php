@@ -4,6 +4,8 @@
 <?php
 $workerUpdates = $bundle['workerUpdates'] ?? [];
 $heavyEquipment = $bundle['heavyEquipment'] ?? [];
+$realizationItems = $bundle['realizationItems'] ?? [];
+$lightTools = $bundle['lightTools'] ?? [];
 $hasOvertime = (int) ($bundle['overtime']['is_enabled'] ?? 0) === 1;
 $overtimeText = $hasOvertime
     ? trim((string) ($bundle['overtime']['start_time'] ?? '-')) . ' - ' . trim((string) ($bundle['overtime']['end_time'] ?? '-'))
@@ -99,7 +101,24 @@ $overtimeText = $hasOvertime
         <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
     </summary>
     <div class="AccordionBody">
-        <div class="StructuredNote"><?= nl2br(esc($bundle['report']['realization_summary'])) ?></div>
+        <?php if ($realizationItems !== []) : ?>
+            <div class="StructuredRows">
+                <?php foreach ($realizationItems as $item) : ?>
+                    <div class="StructuredRow">
+                        <span class="StructuredLabel"><?= esc($item['work_item']) ?></span>
+                        <strong class="StructuredValue">
+                            Sat: <?= esc($item['unit'] ?: '-') ?> |
+                            Rencana: <?= esc($item['plan_text'] ?: '-') ?> |
+                            Realisasi: <?= esc($item['realization_text'] ?: '-') ?> |
+                            Deviasi: <?= esc($item['deviation_text'] ?: '-') ?> |
+                            Rekanan: <?= esc($item['partner'] ?: '-') ?>
+                        </strong>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else : ?>
+            <div class="StructuredNote"><?= nl2br(esc($bundle['report']['realization_summary'])) ?></div>
+        <?php endif; ?>
     </div>
 </details>
 
@@ -119,7 +138,10 @@ $overtimeText = $hasOvertime
                     <?php foreach ($heavyEquipment as $item) : ?>
                         <div class="StructuredRow">
                             <span class="StructuredLabel"><?= esc($item['equipment_label']) ?></span>
-                            <strong class="StructuredValue"><?= esc((string) $item['quantity']) ?></strong>
+                            <strong class="StructuredValue">
+                                Jumlah <?= esc((string) $item['quantity']) ?> |
+                                Volume <?= esc((string) ($item['volume'] ?? $item['quantity'])) ?> <?= esc((string) ($item['unit'] ?? 'unit')) ?>
+                            </strong>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -130,7 +152,18 @@ $overtimeText = $hasOvertime
 
         <div class="AccordionGroup">
             <p class="AccordionGroupTitle">Alat Kerja Ringan</p>
-            <div class="StructuredNote"><?= nl2br(esc($bundle['tool']['summary_text'])) ?></div>
+            <?php if ($lightTools !== []) : ?>
+                <div class="StructuredRows">
+                    <?php foreach ($lightTools as $item) : ?>
+                        <div class="StructuredRow">
+                            <span class="StructuredLabel"><?= esc($item['tool_label']) ?></span>
+                            <strong class="StructuredValue"><?= esc((string) ($item['volume'] ?? '-')) ?> <?= esc((string) ($item['unit'] ?? '')) ?></strong>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else : ?>
+                <div class="StructuredNote"><?= nl2br(esc($bundle['tool']['summary_text'])) ?></div>
+            <?php endif; ?>
         </div>
 
         <div class="AccordionGroup">

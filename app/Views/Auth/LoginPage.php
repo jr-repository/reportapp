@@ -296,16 +296,28 @@
 
 <div class="LoginInlinePanel">
     <div class="LoginInlineHeading">
-        <h2>Welcome back !</h2>
-        <p>Masuk ke akun Anda</p>
+        <h2><?= ! empty($otpMode) ? 'Verifikasi OTP' : 'Welcome back !' ?></h2>
+        <p><?= ! empty($otpMode) ? 'Masukkan kode dari WhatsApp' : 'Masuk ke akun Anda' ?></p>
     </div>
 
-    <form method="post" action="<?= base_url('login') ?>" class="LoginInlineForm">
+    <form method="post" action="<?= ! empty($otpMode) ? base_url('login/otp') : base_url('login') ?>" class="LoginInlineForm">
         <?= csrf_field() ?>
 
+        <?php if (! empty($otpMode)) : ?>
         <label class="LoginInlineField">
-            <span>Email / Username</span>
-            <input type="text" name="login" value="<?= esc(old('login')) ?>" placeholder="Masukkan email atau username" required>
+            <span>Kode OTP</span>
+            <input type="text" name="otp" value="<?= esc(old('otp')) ?>" inputmode="numeric" maxlength="6" placeholder="6 digit OTP" required>
+        </label>
+
+        <button type="submit" class="LoginInlineButton">Verifikasi</button>
+
+        <div class="LoginInlineFooter">
+            <a href="<?= base_url('login') ?>">Login ulang</a>
+        </div>
+        <?php else : ?>
+        <label class="LoginInlineField">
+            <span>Nomor HP</span>
+            <input type="tel" name="phone" value="<?= esc(old('phone')) ?>" placeholder="Contoh: 08 / 628 / 8" required>
         </label>
 
         <label class="LoginInlineField">
@@ -324,6 +336,7 @@
             <span>Belum punya akun?</span>
             <a href="<?= base_url('register') ?>">Sign Up</a>
         </div>
+        <?php endif; ?>
 
     </form>
 </div>
