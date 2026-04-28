@@ -298,10 +298,10 @@
                 <input type="text" name="fullName" value="<?= esc(old('fullName')) ?>" required>
             </label>
 
-            <label class="RegisterInlineField">
+            <!-- <label class="RegisterInlineField">
                 <span>Email (Opsional)</span>
                 <input type="email" name="email" value="<?= esc(old('email')) ?>">
-            </label>
+            </label> -->
 
             <label class="RegisterInlineField">
                 <span>Username</span>

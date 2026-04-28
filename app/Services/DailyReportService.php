@@ -462,8 +462,8 @@ class DailyReportService
                 'category_id' => null,
                 'label'       => $customLabel,
                 'quantity'    => $customQuantity,
-                'volume'      => trim((string) ($payload['heavyCustomVolume'] ?? $customQuantity)),
-                'unit'        => trim((string) ($payload['heavyCustomUnit'] ?? 'unit')) ?: 'unit',
+                'volume'      => (string) $customQuantity, // mem-force valuenya jadi keterangan jumlah
+                'unit'        => 'unit',
             ];
         }
 
@@ -475,8 +475,8 @@ class DailyReportService
                     'category_id' => null,
                     'label'       => $label,
                     'quantity'    => $quantity,
-                    'volume'      => trim((string) ($row['volume'] ?? $quantity)),
-                    'unit'        => trim((string) ($row['unit'] ?? 'unit')) ?: 'unit',
+                    'volume'      => (string) $quantity, // mem-force valuenya jadi keterangan jumlah
+                    'unit'        => 'unit',             // otomatis selalu 'unit'
                 ];
             }
         }

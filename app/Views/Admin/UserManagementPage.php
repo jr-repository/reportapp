@@ -23,18 +23,7 @@
         </label>
 
         <div class="FieldGrid">
-            <label class="FieldBlock">
-                <span>Email (Opsional)</span>
-                <input type="email" name="email" value="<?= esc(old('email', $editUser['email'] ?? '')) ?>">
-            </label>
-            <label class="FieldBlock">
-                <span>Username</span>
-                <input type="text" name="username" value="<?= esc(old('username', $editUser['username'] ?? '')) ?>" required>
-            </label>
-        </div>
-
-        <div class="FieldGrid">
-            <label class="FieldBlock">
+             <label class="FieldBlock">
                 <span>Role</span>
                 <select name="roleId" required>
                     <?php foreach ($roles as $role) : ?>
@@ -44,6 +33,14 @@
                     <?php endforeach; ?>
                 </select>
             </label>
+            <label class="FieldBlock">
+                <span>Username</span>
+                <input type="text" name="username" value="<?= esc(old('username', $editUser['username'] ?? '')) ?>" required>
+            </label>
+        </div>
+
+        <div class="FieldGrid">
+           
         </div>
 
         <div class="StatusToggleField">
@@ -91,6 +88,7 @@
                 <div class="InlineActions">
                     <a href="<?= base_url('admin/users?edit=' . $user['id']) ?>" class="InlineAction isIconOnly" aria-label="Edit user" title="Edit user"><?= trace_icon('edit') ?></a>
                     <a href="<?= base_url('admin/users/toggle/' . $user['id']) ?>" class="InlineAction isIconOnly UserStatusLink <?= $user['status'] === 'Active' ? 'isActive' : 'isInactive' ?>" aria-label="Toggle status user" title="Toggle status user"><?= trace_icon('toggle') ?></a>
+                    <a href="<?= base_url('admin/users/delete/' . $user['id']) ?>" class="InlineAction isIconOnly" style="color: #d71920;" onclick="return confirm('Hapus user dan seluruh data laporannya secara permanen? Data yang sudah dihapus tidak dapat dikembalikan.')" aria-label="Delete user" title="Delete user"><?= trace_icon('delete') ?></a>
                 </div>
             </div>
         <?php endforeach; ?>

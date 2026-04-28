@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Services\DailyReportService;
 use App\Services\ReportPdfService;
+use App\Services\ReportSummaryService;
 
 class DailyReportController extends BaseController
 {
@@ -76,10 +77,14 @@ class DailyReportController extends BaseController
             return redirect()->to(base_url('/'))->with('error', 'Akses ditolak.');
         }
 
+        // Generate WA Summary untuk dirender di view hasil dengan direct instantiation
+        $waSummary = (new ReportSummaryService())->build($bundle);
+
         return $this->page('Reports/ReviewReportPage', [
             'pageTitle' => 'Review & Submit',
             'bundle'    => $bundle,
             'summary'   => $this->dailyReportService->buildChecklistSummary($reportId),
+            'waSummary' => $waSummary,
         ]);
     }
 

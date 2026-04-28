@@ -26,13 +26,14 @@ class AuthController extends BaseController
             return redirect()->back()->withInput()->with('errors', service('validation')->getErrors());
         }
 
-        $result = $this->authService->startOtpLogin((string) $payload['phone'], (string) $payload['password'], $this->request);
+        // Langsung bypass verifikasi tanpa OTP untuk login
+        $success = $this->authService->attempt((string) $payload['phone'], (string) $payload['password'], $this->request);
 
-        if (! $result['success']) {
-            return redirect()->back()->withInput()->with('errors', $result['errors']);
+        if (! $success) {
+            return redirect()->back()->withInput()->with('errors', ['login' => 'Nomor HP atau password tidak valid.']);
         }
 
-        return redirect()->to(base_url('login/otp'))->with('success', 'OTP sudah dikirim ke WhatsApp.');
+        return redirect()->to(base_url('/'))->with('success', 'Login berhasil.');
     }
 
     public function otpPage(): string

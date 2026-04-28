@@ -269,7 +269,7 @@ $overtimeText = $hasOvertime
                 <?= trace_icon('copy') ?>
             </button>
         </div>
-        <pre id="WhatsAppSummary" class="SummaryBox"><?= esc($bundle['report']['whatsapp_summary'] ?: 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
+        <pre id="WhatsAppSummary" class="SummaryBox" style="white-space: pre-wrap; font-size: 13px; line-height: 1.6; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; margin: 0; color: #1e293b;"><?= esc($bundle['report']['whatsapp_summary'] ?: 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
     </div>
 </details>
 

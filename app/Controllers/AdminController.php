@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Models\DailyReportModel;
 use App\Models\RoleModel;
 use App\Models\UserModel;
 use App\Services\AuthService;
 use App\Services\DailyReportService;
+use Config\Database;
 
 class AdminController extends BaseController
 {
@@ -111,6 +113,53 @@ class AdminController extends BaseController
         ]);
 
         return redirect()->to(base_url('admin/users'))->with('success', 'Status user berhasil diubah.');
+    }
+
+    public function deleteUser(int $userId)
+    {
+        $actor = $this->authService->currentUser();
+
+        // Cegah hapus diri sendiri
+        if ($actor !== null && (int) $actor['id'] === $userId) {
+            return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $user = $this->userModel->find($userId);
+        if ($user === null) {
+            return redirect()->to(base_url('admin/users'))->with('error', 'User tidak ditemukan.');
+        }
+
+        $db = Database::connect();
+        $db->transStart();
+
+        // 1. Ambil semua laporan di mana user ini adalah pekerja atau pembuatnya
+        $reportModel = new DailyReportModel();
+        $reports = $reportModel->groupStart()
+            ->where('worker_user_id', $userId)
+            ->orWhere('created_by_user_id', $userId)
+            ->groupEnd()
+            ->findAll();
+
+        // 2. Hapus permanen (Hard Delete) setiap laporan
+        // Karena di database menggunakan ON DELETE CASCADE, menghapus row DailyReports 
+        // akan otomatis menghapus Foto, Lokasi, Item Realisasi, dll di tabel terkait.
+        foreach ($reports as $report) {
+            $reportModel->delete($report['id'], true);
+        }
+
+        // 3. Hapus permanen (Hard Delete) akun user
+        // Ini juga akan menghapus Session dan Refresh Token terkait karena FK CASCADE di DB.
+        $this->userModel->delete($userId, true);
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return redirect()->to(base_url('admin/users'))->with('error', 'Gagal menghapus user dan data terkait.');
+        }
+
+        $this->authService->writeAudit((int) $actor['id'], 'DeleteUser', 'Users', $userId, ['username' => $user['username']]);
+
+        return redirect()->to(base_url('admin/users'))->with('success', 'User dan seluruh data laporan terkait berhasil dihapus permanen.');
     }
 
     public function reports(): string

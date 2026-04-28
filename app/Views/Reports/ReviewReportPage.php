@@ -10,13 +10,17 @@
     'actionIcon' => 'edit',
 ]) ?>
 
-<?= view('Components/AutoSendWAToggle', [
-    'toggleId' => 'ReviewAutoSendWaToggle',
-]) ?>
-
 <section class="MetricCard isAccent">
     <span class="MetricLabel">Progress Checklist</span>
     <strong><?= esc((string) $summary['doneCount']) ?>/<?= esc((string) $summary['totalCount']) ?> lengkap</strong>
+</section>
+
+<section class="InfoCard">
+    <div class="CardHeading">
+        <h2>Ringkasan WhatsApp</h2>
+        <span>Preview hasil input Anda</span>
+    </div>
+    <pre class="SummaryBox" style="white-space: pre-wrap; font-size: 13px; line-height: 1.6; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; margin: 0; color: #1e293b;"><?= esc($waSummary) ?></pre>
 </section>
 
 <section class="InfoCard">
@@ -31,22 +35,6 @@
                 <strong><?= $item['done'] ? '✓' : '✕' ?></strong>
             </div>
         <?php endforeach; ?>
-    </div>
-</section>
-
-<section class="InfoCard">
-    <div class="CardHeading">
-        <h2>Ringkasan Singkat</h2>
-        <span>Preview data</span>
-    </div>
-    <div class="DetailList">
-        <div><span>Tanggal</span><strong><?= esc(date('d M Y', strtotime($bundle['report']['report_date']))) ?></strong></div>
-        <div><span>Pelaksana</span><strong><?= esc($bundle['worker']['full_name']) ?></strong></div>
-        <div><span>Lokasi</span><strong><?= esc($bundle['location']['area_label'] . ' - ' . $bundle['location']['current_location']) ?></strong></div>
-        <div><span>Cuaca</span><strong><?= esc($bundle['report']['weather_code']) ?></strong></div>
-        <div><span>Foto</span><strong><?= esc((string) count($bundle['photos'])) ?> file</strong></div>
-        <div><span>Realisasi</span><strong><?= esc((string) count($bundle['realizationItems'] ?? [])) ?> baris</strong></div>
-        <div><span>Alat Ringan</span><strong><?= esc((string) count($bundle['lightTools'] ?? [])) ?> item</strong></div>
     </div>
 </section>
 

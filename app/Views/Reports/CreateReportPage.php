@@ -13,19 +13,76 @@ $lightTools       = old('lightTools', $formData['lightTools'] ?? []);
 
 $realizationItems = is_array($realizationItems) && $realizationItems !== [] ? $realizationItems : [['work_item' => '', 'unit' => '', 'plan_text' => '', 'realization_text' => '', 'deviation_text' => '', 'partner' => '']];
 $workerCustomRows = is_array($workerCustomRows) && $workerCustomRows !== [] ? $workerCustomRows : [['label' => '', 'quantity' => '']];
-$heavyCustomRows  = is_array($heavyCustomRows) && $heavyCustomRows !== [] ? $heavyCustomRows : [['label' => '', 'quantity' => '', 'volume' => '', 'unit' => 'unit']];
+$heavyCustomRows  = is_array($heavyCustomRows) && $heavyCustomRows !== [] ? $heavyCustomRows : [['label' => '', 'quantity' => '']];
 $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : [['tool_label' => '', 'volume' => '', 'unit' => '']];
 ?>
+
+<style>
+    /* Styling khusus Grid Pekerja dan Alat Berat */
+    .GridTwoColumns {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .BoxedCounterField {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        background: #ffffff;
+    }
+    .BoxedCounterField span {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+    .BoxedCounterField input {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+        width: 100%;
+        background: #f8fafc;
+        text-align: left;
+    }
+    .StickyActionBar.isWizard {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+    }
+    .StickyActionBar .GhostButton,
+    .StickyActionBar .PrimaryButton {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 10px;
+        min-height: 44px;
+        flex-shrink: 0;
+    }
+    .StickyActionBar .GhostButton {
+        background: #f1f1f1;
+        color: #333;
+    }
+    .StickyActionBar .PrimaryButton {
+        background: linear-gradient(135deg, #2c3e70, #c0392b);
+        color: #fff;
+    }
+    .StickyActionBar svg {
+        width: 16px;
+        height: 16px;
+    }
+</style>
 
 <?= view('Components/PageHeader', [
     'eyebrow' => 'Input Laporan Harian',
     'title' => $pageTitle ?? 'Input Laporan',
     'subtitle' => 'Satu form lengkap untuk seluruh aktivitas pekerjaan harian lapangan.',
-]) ?>
-
-<?= view('Components/AutoSendWAToggle', [
-    'toggleId' => 'CreateAutoSendWaToggle',
-    'hint'     => 'Preferensi ini dipakai saat Anda submit final laporan dari halaman review/detail.',
 ]) ?>
 
 <form method="post" action="<?= base_url('reports/save-draft') ?>" enctype="multipart/form-data" class="StackForm" id="ReportWizardForm" data-step="<?= esc((string) max(1, min(7, $currentStep))) ?>" data-draft-key="<?= esc('trace-report-draft:' . ($currentUser['id'] ?? 'guest') . ':' . ($formData['reportId'] ?? 'new')) ?>">
@@ -67,56 +124,17 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
             </label>
         </div>
 
-      <style>
-.StickyActionBar.isWizard {
-    display: flex;
-    justify-content: space-between; /* ⬅️ ini kuncinya */
-    align-items: center;
-    padding: 12px;
-}
+        <div class="StickyActionBar isWizard">
+            <a href="<?= base_url('/') ?>" class="GhostButton">
+                <?= trace_icon('back') ?>
+                <span>Back</span>
+            </a>
 
-.StickyActionBar .GhostButton,
-.StickyActionBar .PrimaryButton {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 10px;
-    min-height: 44px;
-    flex-shrink: 0; /* biar gak ketarik */
-}
-
-.StickyActionBar .GhostButton {
-    background: #f1f1f1;
-    color: #333;
-}
-
-.StickyActionBar .PrimaryButton {
-    background: linear-gradient(135deg, #2c3e70, #c0392b);
-    color: #fff;
-}
-
-.StickyActionBar svg {
-    width: 16px;
-    height: 16px;
-}
-</style>
-
-<div class="StickyActionBar isWizard">
-    <a href="<?= base_url('/') ?>" 
-       class="GhostButton">
-        <?= trace_icon('back') ?>
-        <span>Back</span>
-    </a>
-
-    <button type="button" 
-            class="PrimaryButton" 
-            data-wizard-next>
-        <span>Next</span>
-        <?= trace_icon('next') ?>
-    </button>
-</div>
+            <button type="button" class="PrimaryButton" data-wizard-next>
+                <span>Next</span>
+                <?= trace_icon('next') ?>
+            </button>
+        </div>
     </section>
 
     <section class="FormSectionCard WizardStep" id="section-location" data-wizard-step="2">
@@ -225,12 +243,12 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
 
     <section class="FormSectionCard WizardStep" id="section-worker" data-wizard-step="4">
         <div class="CardHeading">
-            <h2>4. Update Pekerja</h2>
+            <h2>4. Update Pekerja & Realisasi</h2>
             <span>Isi jumlah tenaga kerja yang hadir</span>
         </div>
-        <div class="CounterGrid">
+        <div class="GridTwoColumns">
             <?php foreach ($formOptions['workerCategories'] as $category) : ?>
-                <label class="CounterField">
+                <label class="BoxedCounterField">
                     <span><?= esc($category['name']) ?></span>
                     <input type="number" min="0" name="workerUpdates[<?= esc((string) $category['id']) ?>]" value="<?= esc((string) old('workerUpdates.' . $category['id'], $workerUpdates[$category['id']] ?? '')) ?>" placeholder="0">
                 </label>
@@ -263,12 +281,12 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
 
     <section class="FormSectionCard WizardStep" id="section-heavy" data-wizard-step="5">
         <div class="CardHeading">
-            <h2>5. Alat Berat</h2>
+            <h2>5. Alat Berat, Alat Ringan & Material</h2>
             <span>Input operasional hari ini</span>
         </div>
-        <div class="CounterGrid">
+        <div class="GridTwoColumns">
             <?php foreach ($formOptions['heavyCategories'] as $category) : ?>
-                <label class="CounterField">
+                <label class="BoxedCounterField">
                     <span><?= esc($category['name']) ?></span>
                     <input type="number" min="0" name="heavyEquipment[<?= esc((string) $category['id']) ?>]" value="<?= esc((string) old('heavyEquipment.' . $category['id'], $heavyEquipment[$category['id']] ?? '')) ?>" placeholder="0">
                 </label>
@@ -278,7 +296,7 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         <div class="DynamicRows" data-dynamic-rows="heavyCustomRows">
             <p class="AccordionGroupTitle">Alat Berat Tambahan</p>
             <?php foreach ($heavyCustomRows as $index => $item) : ?>
-                <div class="DynamicRow" data-dynamic-row>
+                <div class="DynamicRow isTwoColumn" data-dynamic-row>
                     <label class="FieldBlock">
                         <span>Nama Alat</span>
                         <input type="text" name="heavyCustomRows[<?= esc((string) $index) ?>][label]" value="<?= esc($item['label'] ?? '') ?>" placeholder="Isi disini jika tidak ada pilihan">
@@ -286,14 +304,6 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
                     <label class="FieldBlock">
                         <span>Jumlah</span>
                         <input type="number" min="0" name="heavyCustomRows[<?= esc((string) $index) ?>][quantity]" value="<?= esc($item['quantity'] ?? '') ?>" placeholder="0">
-                    </label>
-                    <label class="FieldBlock">
-                        <span>Volume</span>
-                        <input type="text" name="heavyCustomRows[<?= esc((string) $index) ?>][volume]" value="<?= esc($item['volume'] ?? '') ?>" placeholder="Volume">
-                    </label>
-                    <label class="FieldBlock">
-                        <span>Satuan</span>
-                        <input type="text" name="heavyCustomRows[<?= esc((string) $index) ?>][unit]" value="<?= esc($item['unit'] ?? 'unit') ?>" placeholder="unit">
                     </label>
                     <button type="button" class="GhostButton DynamicRemoveButton" data-remove-row>Hapus</button>
                 </div>
@@ -399,9 +409,15 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
             </label>
             <label class="FieldBlock">
                 <span>Jam Selesai</span>
-                <input type="text" name="overtimeEnd" value="<?= esc(old('overtimeEnd', $formData['overtimeEnd'] ?? '24:00')) ?>" placeholder="24:00">
+                <input type="time" name="overtimeEnd" value="<?= esc(old('overtimeEnd', $formData['overtimeEnd'] ?? '19:00')) ?>">
             </label>
         </div>
+
+        <br>
+        <?= view('Components/AutoSendWAToggle', [
+            'toggleId' => 'CreateAutoSendWaToggle',
+            'hint'     => 'Preferensi ini dipakai saat Anda submit final laporan dari halaman review.',
+        ]) ?>
 
         <div class="StickyActionBar isWizard">
             <button type="button" class="GhostButton" data-wizard-prev aria-label="Kembali ke langkah sebelumnya" title="Kembali ke langkah sebelumnya"><?= trace_icon('back') ?><span>Back</span></button>
