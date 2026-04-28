@@ -88,7 +88,7 @@
                 <div class="InlineActions">
                     <a href="<?= base_url('admin/users?edit=' . $user['id']) ?>" class="InlineAction isIconOnly" aria-label="Edit user" title="Edit user"><?= trace_icon('edit') ?></a>
                     <a href="<?= base_url('admin/users/toggle/' . $user['id']) ?>" class="InlineAction isIconOnly UserStatusLink <?= $user['status'] === 'Active' ? 'isActive' : 'isInactive' ?>" aria-label="Toggle status user" title="Toggle status user"><?= trace_icon('toggle') ?></a>
-                    <a href="<?= base_url('admin/users/delete/' . $user['id']) ?>" class="InlineAction isIconOnly" style="color: #d71920;" onclick="return confirm('Hapus user dan seluruh data laporannya secara permanen? Data yang sudah dihapus tidak dapat dikembalikan.')" aria-label="Delete user" title="Delete user"><?= trace_icon('delete') ?></a>
+                    <a href="<?= base_url('admin/users/delete/' . $user['id']) ?>" class="InlineAction isIconOnly" style="color: #d71920;" onclick="return confirm('Hapus user dan seluruh data laporannya secara permanen? Data yang sudah dihapus tidak dapat dikembalikan.')" aria-label="Delete user" title="Delete user"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg></a>
                 </div>
             </div>
         <?php endforeach; ?>

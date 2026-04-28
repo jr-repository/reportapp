@@ -252,20 +252,17 @@ class AuthService
         return $this->session ?? service('session');
     }
 
+    /**
+     * Menormalisasi nomor HP untuk penyimpanan database.
+     * Membersihkan karakter non-digit tanpa mengubah format awalan (62, 08, atau 8) sesuai input user.
+     */
     public function normalizePhone(string $phone): string
     {
+        // Hanya bersihkan karakter non-digit agar login konsisten (misal: menghapus spasi atau tanda hubung)
         $phone = preg_replace('/[^0-9]/', '', $phone) ?? '';
 
         if ($phone === '') {
             return '';
-        }
-
-        if (str_starts_with($phone, '0')) {
-            return '62' . substr($phone, 1);
-        }
-
-        if (! str_starts_with($phone, '62')) {
-            return '62' . $phone;
         }
 
         return $phone;
