@@ -107,12 +107,12 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </div>
         <div class="FieldGrid">
             <label class="FieldBlock">
-                <span>Tanggal Laporan</span>
+                <span>Tanggal Laporan <span style="color: #d71920;">*</span></span>
                 <input type="date" name="reportDate" value="<?= esc(old('reportDate', $formData['reportDate'] ?? '')) ?>" required>
             </label>
 
             <label class="FieldBlock">
-                <span>Supervisor / Pelaksana</span>
+                <span>Supervisor / Pelaksana <span style="color: #d71920;">*</span></span>
                 <select name="workerUserId" required>
                     <option value="">Pilih user</option>
                     <?php foreach ($formOptions['workerUsers'] as $user) : ?>
@@ -143,12 +143,12 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
             <span>Lokasi aktual pekerjaan</span>
         </div>
         <label class="FieldBlock">
-            <span>Lokasi Terkini</span>
+            <span>Lokasi Terkini <span style="color: #d71920;">*</span></span>
             <input type="text" name="currentLocation" value="<?= esc(old('currentLocation', $formData['currentLocation'] ?? '')) ?>" placeholder="Contoh: Jl. Soekarno Hatta, 82 Bandung" required>
         </label>
 
         <label class="FieldBlock">
-            <span>Pilih Area</span>
+            <span>Pilih Area <span style="color: #d71920;">*</span></span>
             <select name="areaCode" id="AreaCodeSelect" required>
                 <option value="">Pilih area</option>
                 <?php foreach ($formOptions['areas'] as $area) : ?>
@@ -165,7 +165,7 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </label>
 
         <div class="UploadCard" id="section-photo">
-            <strong>Dokumentasi Pekerjaan</strong>
+            <strong>Dokumentasi Pekerjaan <span style="color: #d71920;">*</span></strong>
             <p>Upload bisa dari galeri atau ambil foto langsung dari device.</p>
             <input type="file" name="photos[]" id="PhotoInput" accept="image/*" multiple>
             <div id="PhotoPreview" class="PhotoPreviewGrid"></div>
@@ -179,7 +179,7 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </div>
 
         <label class="FieldBlock">
-            <span>Keterangan Cuaca</span>
+            <span>Keterangan Cuaca <span style="color: #d71920;">*</span></span>
         </label>
         <div class="WeatherOptions">
             <?php foreach ($formOptions['weatherOptions'] as $weather) : ?>
@@ -346,7 +346,7 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </div>
 
         <label class="FieldBlock" id="section-material">
-            <span>Material & Bahan Kerja</span>
+            <span>Material & Bahan Kerja <span style="color: #d71920;">*</span></span>
             <textarea name="materialSummary" rows="4" placeholder="Contoh: menggunakan Material XXX dan Bahan ZZZ untuk pekerjaan AAA" required><?= esc(old('materialSummary', $formData['materialSummary'] ?? '')) ?></textarea>
         </label>
 
@@ -359,23 +359,23 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
     <section class="FormSectionCard WizardStep" id="section-obstacle" data-wizard-step="7">
         <div class="CardHeading">
             <h2>7. Kendala, Rencana Esok & Lembur</h2>
-            <span>Lengkapi penutup laporan</span>
+            <span>Lengkapi penutup laporan (Opsional)</span>
         </div>
 
         <div class="FieldGrid">
             <label class="FieldBlock">
                 <span>Bentuk Kendala</span>
-                <input type="text" name="obstacleShape" value="<?= esc(old('obstacleShape', $formData['obstacleShape'] ?? '')) ?>" required>
+                <input type="text" name="obstacleShape" value="<?= esc(old('obstacleShape', $formData['obstacleShape'] ?? '')) ?>">
             </label>
             <label class="FieldBlock">
                 <span>Penyebab Kendala</span>
-                <input type="text" name="obstacleCause" value="<?= esc(old('obstacleCause', $formData['obstacleCause'] ?? '')) ?>" required>
+                <input type="text" name="obstacleCause" value="<?= esc(old('obstacleCause', $formData['obstacleCause'] ?? '')) ?>">
             </label>
         </div>
 
         <label class="FieldBlock">
             <span>Dampak Pekerjaan</span>
-            <input type="text" name="obstacleImpact" value="<?= esc(old('obstacleImpact', $formData['obstacleImpact'] ?? '')) ?>" required>
+            <input type="text" name="obstacleImpact" value="<?= esc(old('obstacleImpact', $formData['obstacleImpact'] ?? '')) ?>">
         </label>
 
         <label class="FieldBlock">
@@ -385,7 +385,7 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
 
         <label class="FieldBlock">
             <span>Rencana Pekerjaan Esok</span>
-            <textarea name="tomorrowPlan" rows="5" placeholder="Contoh: Besok melanjutkan sisa pekerjaan..." required><?= esc(old('tomorrowPlan', $formData['tomorrowPlan'] ?? '')) ?></textarea>
+            <textarea name="tomorrowPlan" rows="5" placeholder="Contoh: Besok melanjutkan sisa pekerjaan..."><?= esc(old('tomorrowPlan', $formData['tomorrowPlan'] ?? '')) ?></textarea>
         </label>
 
         <div class="FieldGrid">

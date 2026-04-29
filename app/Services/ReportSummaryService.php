@@ -73,6 +73,12 @@ class ReportSummaryService
             'Lembur: ' . ((int) ($overtime['is_enabled'] ?? 0) === 1 ? 'Ya (' . $this->value($overtime['start_time'] ?? '') . ' - ' . $this->value($overtime['end_time'] ?? '') . ')' : 'Tidak'),
         ];
 
+        // Memasukkan Info Riwayat Edit jika Laporan di-update pasca submit Final
+        if (!empty($report['edited_at'])) {
+            $lines[] = '';
+            $lines[] = '*(Catatan: Laporan ini telah diedit/diperbarui pada ' . date('d M Y H:i', strtotime($report['edited_at'])) . ')*';
+        }
+
         return implode(PHP_EOL, array_filter($lines, static fn ($line): bool => $line !== null));
     }
 

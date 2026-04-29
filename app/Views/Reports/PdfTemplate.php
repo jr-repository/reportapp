@@ -482,6 +482,12 @@ if ($photoCount <= 1) {
                     <td colspan="3"><?= nl2br(esc($location['reason'])) ?></td>
                 </tr>
             <?php endif; ?>
+            <?php if (!empty($report['edited_at'])) : ?>
+                <tr>
+                    <td class="SummaryLabel">Diedit Pada</td>
+                    <td colspan="3" style="color: #d71920; font-weight: bold;"><?= date('d F Y H:i:s', strtotime($report['edited_at'])) ?></td>
+                </tr>
+            <?php endif; ?>
         </table>
     </div>
 

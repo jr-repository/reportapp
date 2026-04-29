@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
  *
  * Extend this class in any new controllers:
  * ```
- *     class Home extends BaseController
+ * class Home extends BaseController
  * ```
  *
  * For security, be sure to declare any new methods as protected or private.
@@ -67,11 +67,14 @@ abstract class BaseController extends Controller
         $items = [
             ['label' => 'Home', 'icon' => 'house', 'href' => base_url('/')],
             ['label' => 'Laporan', 'icon' => 'document', 'href' => base_url('reports/create')],
-            ['label' => 'Profil', 'icon' => 'user', 'href' => base_url('profile')],
         ];
 
-        if (in_array($currentUser['role_code'], ['Admin', 'Manager'], true)) {
-            $items[1] = ['label' => 'Monitor', 'icon' => 'chart', 'href' => base_url('admin/reports')];
+        if (in_array($currentUser['role_code'], ['Admin', 'Manager', 'Supervisor'], true)) {
+            $items[] = [
+                'label' => $currentUser['role_code'] === 'Supervisor' ? 'Record' : 'Monitor',
+                'icon'  => 'chart',
+                'href'  => base_url('admin/reports')
+            ];
         }
 
         if ($currentUser['role_code'] === 'Manager') {
@@ -81,6 +84,8 @@ abstract class BaseController extends Controller
         if ($currentUser['role_code'] === 'Admin') {
             $items[] = ['label' => 'Admin', 'icon' => 'shield', 'href' => base_url('admin/users')];
         }
+
+        $items[] = ['label' => 'Profil', 'icon' => 'user', 'href' => base_url('profile')];
 
         return $items;
     }

@@ -14,17 +14,19 @@
                 <span>Tanggal</span>
                 <input type="date" name="reportDate" value="<?= esc($filters['reportDate']) ?>">
             </label>
-            <label class="FieldBlock">
-                <span>User</span>
-                <select name="workerUserId">
-                    <option value="">Semua user</option>
-                    <?php foreach ($reportUsers as $user) : ?>
-                        <option value="<?= esc((string) $user['id']) ?>" <?= $filters['workerUserId'] === (string) $user['id'] ? 'selected' : '' ?>>
-                            <?= esc($user['full_name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
+            <?php if (! ($isSupervisor ?? false)) : ?>
+                <label class="FieldBlock">
+                    <span>User</span>
+                    <select name="workerUserId">
+                        <option value="">Semua user</option>
+                        <?php foreach ($reportUsers as $user) : ?>
+                            <option value="<?= esc((string) $user['id']) ?>" <?= $filters['workerUserId'] === (string) $user['id'] ? 'selected' : '' ?>>
+                                <?= esc($user['full_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            <?php endif; ?>
         </div>
 
         <div class="FieldGrid">
@@ -55,6 +57,9 @@
                     <strong><?= esc($report['worker_name']) ?></strong>
                     <p><?= esc(date('d M Y', strtotime($report['report_date']))) ?> • <?= esc($report['area_label'] ?? '-') ?></p>
                     <p><?= esc(character_limiter($report['current_location'] ?? '-', 70)) ?></p>
+                    <?php if (!empty($report['edited_at'])) : ?>
+                        <p style="color: #e67e22; font-weight: bold; font-size: 0.75rem; margin-top: 4px;">Diedit: <?= date('d M Y H:i', strtotime($report['edited_at'])) ?></p>
+                    <?php endif; ?>
                 </div>
                 <div class="InlineActions">
                     <span class="StatusBadge <?= $report['status'] === 'Submitted' ? 'isDone' : 'isPending' ?>">

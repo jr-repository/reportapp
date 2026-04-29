@@ -20,6 +20,7 @@ class DailyReportModel extends Model
         'whatsapp_summary',
         'status',
         'submitted_at',
+        'edited_at',
         'created_at',
         'updated_at',
         'deleted_at',

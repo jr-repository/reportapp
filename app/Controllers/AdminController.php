@@ -119,7 +119,6 @@ class AdminController extends BaseController
     {
         $actor = $this->authService->currentUser();
 
-        // Cegah hapus diri sendiri
         if ($actor !== null && (int) $actor['id'] === $userId) {
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
@@ -132,7 +131,6 @@ class AdminController extends BaseController
         $db = Database::connect();
         $db->transStart();
 
-        // 1. Ambil semua laporan di mana user ini adalah pekerja atau pembuatnya
         $reportModel = new DailyReportModel();
         $reports = $reportModel->groupStart()
             ->where('worker_user_id', $userId)
@@ -140,15 +138,10 @@ class AdminController extends BaseController
             ->groupEnd()
             ->findAll();
 
-        // 2. Hapus permanen (Hard Delete) setiap laporan
-        // Karena di database menggunakan ON DELETE CASCADE, menghapus row DailyReports 
-        // akan otomatis menghapus Foto, Lokasi, Item Realisasi, dll di tabel terkait.
         foreach ($reports as $report) {
             $reportModel->delete($report['id'], true);
         }
 
-        // 3. Hapus permanen (Hard Delete) akun user
-        // Ini juga akan menghapus Session dan Refresh Token terkait karena FK CASCADE di DB.
         $this->userModel->delete($userId, true);
 
         $db->transComplete();
@@ -164,15 +157,26 @@ class AdminController extends BaseController
 
     public function reports(): string
     {
+        $currentUser = $this->authService->currentUser();
+        $isSupervisor = $currentUser['role_code'] === 'Supervisor';
+
+        $filters = [
+            'reportDate'   => (string) ($this->request->getGet('reportDate') ?? ''),
+            'workerUserId' => (string) ($this->request->getGet('workerUserId') ?? ''),
+            'status'       => (string) ($this->request->getGet('status') ?? ''),
+        ];
+
+        // Jika dia Supervisor, paksa filter agar dia hanya bisa melihat laporannya sendiri
+        if ($isSupervisor) {
+            $filters['workerUserId'] = (string) $currentUser['id'];
+        }
+
         return $this->page('Admin/ReportManagementPage', [
-            'pageTitle'  => 'Monitoring Laporan',
-            'reports'    => $this->dailyReportService->getReports($this->request->getGet()),
-            'reportUsers'=> (new UserModel())->getActiveReportUsers(),
-            'filters'    => [
-                'reportDate'   => (string) ($this->request->getGet('reportDate') ?? ''),
-                'workerUserId' => (string) ($this->request->getGet('workerUserId') ?? ''),
-                'status'       => (string) ($this->request->getGet('status') ?? ''),
-            ],
+            'pageTitle'   => 'Monitoring Laporan',
+            'reports'     => $this->dailyReportService->getReports($filters),
+            'reportUsers' => (new UserModel())->getActiveReportUsers(),
+            'filters'     => $filters,
+            'isSupervisor'=> $isSupervisor,
         ]);
     }
 }

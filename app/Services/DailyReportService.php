@@ -284,14 +284,25 @@ class DailyReportService
             return ['success' => false, 'message' => 'Anda tidak memiliki akses untuk submit laporan ini.'];
         }
 
+        $updateData = [
+            'status' => 'Submitted',
+        ];
+        
         $bundle['report']['status'] = 'Submitted';
-        $summary = $this->reportSummaryService->build($bundle);
 
-        $this->dailyReportModel->update($reportId, [
-            'status'           => 'Submitted',
-            'submitted_at'     => date('Y-m-d H:i:s'),
-            'whatsapp_summary' => $summary,
-        ]);
+        // Setel submitted_at jika baru pertama kali atau diedit jika update paska submit
+        if (empty($bundle['report']['submitted_at'])) {
+            $updateData['submitted_at'] = date('Y-m-d H:i:s');
+            $bundle['report']['submitted_at'] = $updateData['submitted_at'];
+        } else {
+            $updateData['edited_at'] = date('Y-m-d H:i:s');
+            $bundle['report']['edited_at'] = $updateData['edited_at'];
+        }
+
+        $summary = $this->reportSummaryService->build($bundle);
+        $updateData['whatsapp_summary'] = $summary;
+
+        $this->dailyReportModel->update($reportId, $updateData);
 
         $waSent = false;
         if ($autoSendWa) {

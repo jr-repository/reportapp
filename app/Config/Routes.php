@@ -36,8 +36,8 @@ $routes->group('', ['filter' => 'auth'], static function (RouteCollection $route
         $routes->get('users/toggle/(:num)', 'AdminController::toggleUserStatus/$1');
         $routes->get('users/delete/(:num)', 'AdminController::deleteUser/$1');
     });
-
-    $routes->group('admin', ['filter' => 'role:Admin,Manager'], static function (RouteCollection $routes): void {
+    
+    $routes->group('admin', ['filter' => 'role:Admin,Manager,Supervisor'], static function (RouteCollection $routes): void {
         $routes->get('reports', 'AdminController::reports');
     });
 

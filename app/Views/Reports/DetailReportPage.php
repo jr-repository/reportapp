@@ -30,6 +30,9 @@ $overtimeText = $hasOvertime
     <div class="SuccessIcon">✓</div>
     <strong><?= esc($bundle['report']['status']) === 'Submitted' ? 'Laporan berhasil dikirim' : 'Draft tersimpan' ?></strong>
     <p><?= esc($bundle['report']['report_code']) ?></p>
+    <?php if (!empty($bundle['report']['edited_at'])) : ?>
+        <p style="margin-top: 8px; font-size: 0.8rem; color: #e67e22; font-weight: 600;">Diedit pada: <?= date('d M Y H:i', strtotime($bundle['report']['edited_at'])) ?></p>
+    <?php endif; ?>
 </section>
 
 <details class="InfoCard InfoAccordion">
@@ -273,14 +276,26 @@ $overtimeText = $hasOvertime
     </div>
 </details>
 
-<?php if ($bundle['report']['status'] !== 'Submitted') : ?>
-    <div class="StickyActionBar">
+<div class="StickyActionBar" style="display:flex; gap: 8px;">
+    <?php if ($bundle['report']['status'] !== 'Submitted') : ?>
         <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" class="GhostButton isIconOnly" aria-label="Edit draft laporan" title="Edit draft laporan"><?= trace_icon('edit') ?></a>
-        <form method="post" action="<?= base_url('reports/submit/' . $bundle['report']['id']) ?>">
+        <form method="post" action="<?= base_url('reports/submit/' . $bundle['report']['id']) ?>" style="flex: 1; margin: 0;">
             <?= csrf_field() ?>
             <input type="hidden" name="autoSendWa" value="0" data-auto-wa-input>
-            <button type="submit" class="PrimaryButton">Submit Final</button>
+            <button type="submit" class="PrimaryButton" style="width: 100%;">Submit Final</button>
         </form>
-    </div>
-<?php endif; ?>
+    <?php else : ?>
+       <a href="<?= base_url('reports/edit/' . $bundle['report']['id']) ?>" 
+   class="PrimaryButton"
+   style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px;">
+
+    <span style="display:flex; align-items:center; width:16px; height:16px;">
+        <?= trace_icon('edit') ?>
+    </span>
+
+    <span>Edit Laporan</span>
+</a>
+    <?php endif; ?>
+</div>
+
 <?= $this->endSection() ?>
