@@ -431,7 +431,7 @@ if ($photoCount <= 1) {
             <td class="MetaCell">
                 <div class="MetaBox">
                     <div class="MetaLabel">Jam Kerja Normal</div>
-                    <div class="MetaValue"><?= esc($normalWorkValue) ?></div>
+                    <div class="MetaValue">07:00 - 17:00</div>
                 </div>
             </td>
         </tr>
