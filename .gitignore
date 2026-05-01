@@ -134,3 +134,10 @@ Notes.txt
 Template Laporan Harian - TRACE.pdf
 .codex
 writable
+
+#-------------------------
+# Project Exclusions (UPDATED)
+#-------------------------
+builds/
+build/
+tests/
