@@ -10,6 +10,7 @@ $hasOvertime = (int) ($bundle['overtime']['is_enabled'] ?? 0) === 1;
 $overtimeText = $hasOvertime
     ? trim((string) ($bundle['overtime']['start_time'] ?? '-')) . ' - ' . trim((string) ($bundle['overtime']['end_time'] ?? '-'))
     : 'Tidak ada lembur';
+$displayWaSummary = trim((string) ($waSummary ?? ''));
 ?>
 <?= view('Components/PageHeader', [
     'eyebrow' => 'Detail Laporan',
@@ -262,7 +263,7 @@ $overtimeText = $hasOvertime
     <summary class="AccordionSummary">
         <div class="AccordionSummaryText">
             <h2>Ringkasan WhatsApp</h2>
-            <span><?= $bundle['report']['whatsapp_summary'] ? 'Siap disalin' : 'Belum terbentuk' ?></span>
+            <span><?= $displayWaSummary !== '' ? 'Siap disalin' : 'Belum terbentuk' ?></span>
         </div>
         <span class="AccordionSummaryIcon" aria-hidden="true"><?= trace_icon('next') ?></span>
     </summary>
@@ -272,7 +273,7 @@ $overtimeText = $hasOvertime
                 <?= trace_icon('copy') ?>
             </button>
         </div>
-        <pre id="WhatsAppSummary" class="SummaryBox" style="white-space: pre-wrap; font-size: 13px; line-height: 1.6; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; margin: 0; color: #1e293b;"><?= esc($bundle['report']['whatsapp_summary'] ?: 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
+        <pre id="WhatsAppSummary" class="SummaryBox" style="white-space: pre-wrap; font-size: 13px; line-height: 1.6; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; margin: 0; color: #1e293b;"><?= esc($displayWaSummary !== '' ? $displayWaSummary : 'Ringkasan WhatsApp akan terbentuk setelah submit final.') ?></pre>
     </div>
 </details>
 

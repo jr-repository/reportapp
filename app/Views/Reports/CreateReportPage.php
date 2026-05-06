@@ -77,6 +77,14 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         width: 16px;
         height: 16px;
     }
+    .RequiredHint {
+        display: block;
+        margin-top: 4px;
+        font-size: 11px;
+        line-height: 1.2;
+        color: #d71920;
+        font-weight: 600;
+    }
 </style>
 
 <?= view('Components/PageHeader', [
@@ -107,12 +115,14 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </div>
         <div class="FieldGrid">
             <label class="FieldBlock">
-                <span>Tanggal Laporan <span style="color: #d71920;">*</span></span>
+                <span>Tanggal Laporan</span>
+                <small class="RequiredHint">wajib diisi</small>
                 <input type="date" name="reportDate" value="<?= esc(old('reportDate', $formData['reportDate'] ?? '')) ?>" required>
             </label>
 
             <label class="FieldBlock">
-                <span>Supervisor / Pelaksana <span style="color: #d71920;">*</span></span>
+                <span>Supervisor / Pelaksana</span>
+                <small class="RequiredHint">wajib diisi</small>
                 <select name="workerUserId" required>
                     <option value="">Pilih user</option>
                     <?php foreach ($formOptions['workerUsers'] as $user) : ?>
@@ -143,12 +153,14 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
             <span>Lokasi aktual pekerjaan</span>
         </div>
         <label class="FieldBlock">
-            <span>Lokasi Terkini <span style="color: #d71920;">*</span></span>
+            <span>Lokasi Terkini</span>
+            <small class="RequiredHint">wajib diisi</small>
             <input type="text" name="currentLocation" value="<?= esc(old('currentLocation', $formData['currentLocation'] ?? '')) ?>" placeholder="Contoh: Jl. Soekarno Hatta, 82 Bandung" required>
         </label>
 
         <label class="FieldBlock">
-            <span>Pilih Area <span style="color: #d71920;">*</span></span>
+            <span>Pilih Area</span>
+            <small class="RequiredHint">wajib diisi</small>
             <select name="areaCode" id="AreaCodeSelect" required>
                 <option value="">Pilih area</option>
                 <?php foreach ($formOptions['areas'] as $area) : ?>
@@ -165,7 +177,8 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </label>
 
         <div class="UploadCard" id="section-photo">
-            <strong>Dokumentasi Pekerjaan <span style="color: #d71920;">*</span></strong>
+            <strong>Dokumentasi Pekerjaan</strong>
+            <small class="RequiredHint">wajib diisi</small>
             <p>Upload bisa dari galeri atau ambil foto langsung dari device.</p>
             <input type="file" name="photos[]" id="PhotoInput" accept="image/*" multiple>
             <div id="PhotoPreview" class="PhotoPreviewGrid"></div>
@@ -179,7 +192,8 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </div>
 
         <label class="FieldBlock">
-            <span>Keterangan Cuaca <span style="color: #d71920;">*</span></span>
+            <span>Keterangan Cuaca</span>
+            <small class="RequiredHint">wajib diisi</small>
         </label>
         <div class="WeatherOptions">
             <?php foreach ($formOptions['weatherOptions'] as $weather) : ?>
@@ -346,7 +360,8 @@ $lightTools       = is_array($lightTools) && $lightTools !== [] ? $lightTools : 
         </div>
 
         <label class="FieldBlock" id="section-material">
-            <span>Material & Bahan Kerja <span style="color: #d71920;">*</span></span>
+            <span>Material & Bahan Kerja</span>
+            <small class="RequiredHint">wajib diisi</small>
             <textarea name="materialSummary" rows="4" placeholder="Contoh: menggunakan Material XXX dan Bahan ZZZ untuk pekerjaan AAA" required><?= esc(old('materialSummary', $formData['materialSummary'] ?? '')) ?></textarea>
         </label>
 

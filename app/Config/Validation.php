@@ -67,7 +67,7 @@ class Validation extends BaseConfig
         'obstacleShape'      => 'permit_empty|min_length[3]|max_length[255]',
         'obstacleCause'      => 'permit_empty|min_length[3]|max_length[255]',
         'obstacleImpact'     => 'permit_empty|min_length[3]|max_length[255]',
-        'tomorrowPlan'       => 'permit_empty|min_length[10]|max_length[5000]',
+        'tomorrowPlan'       => 'permit_empty|min_length[5]|max_length[5000]',
         'overtimeEnabled'    => 'permit_empty|in_list[0,1]',
         'overtimeStart'      => 'permit_empty|regex_match[/^((([0-1][0-9]|2[0-3]):[0-5][0-9])|(24:00))$/]',
         'overtimeEnd'        => 'permit_empty|regex_match[/^((([0-1][0-9]|2[0-3]):[0-5][0-9])|(24:00))$/]',

@@ -122,6 +122,7 @@ class DailyReportController extends BaseController
         return $this->page('Reports/DetailReportPage', [
             'pageTitle' => 'Detail Laporan',
             'bundle'    => $bundle,
+            'waSummary' => (new ReportSummaryService())->build($bundle),
         ]);
     }
 
